@@ -1,0 +1,26 @@
+# dependencies
+/node_modules
+
+# Claude Code local settings
+.claude/
+
+# CV — don't commit personal documents to git
+*.pdf
+
+# Next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
