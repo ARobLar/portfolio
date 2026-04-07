@@ -1,11 +1,16 @@
 export type ProjectCategory = 'professional' | 'hobby' | 'academic'
 
+// [year, month] where month is 1–12. end: null = ongoing
+export type DatePoint = [number, number]
+
 export interface Project {
   slug: string
   title: string
   client: string
   period: string
   startYear: number
+  dateStart: DatePoint
+  dateEnd: DatePoint | null
   category: ProjectCategory
   summary: string
   fullDescription: string
@@ -22,6 +27,8 @@ export const projects: Project[] = [
     client: 'Region Stockholm (via Sopra Steria)',
     period: 'May 2025 – Feb 2026',
     startYear: 2025,
+    dateStart: [2025, 5],
+    dateEnd: [2026, 2],
     category: 'professional',
     summary:
       'A web-based system for managing prescriptions for assistive devices across the Stockholm Region, including an API layer enabling 300+ legacy-system suppliers to integrate securely and reliably.',
@@ -51,6 +58,8 @@ An API layer was built that followed new requirements and allowed over 300 suppl
     client: 'Elefant',
     period: 'Feb 2024 – Apr 2025',
     startYear: 2024,
+    dateStart: [2024, 2],
+    dateEnd: [2025, 4],
     category: 'professional',
     summary:
       'A Retail Media Network initiative combining physical in-store touchpoints with AI-driven digital activation. First pilot resulted in 300% increased sales. Robin served as CTO, co-founder, and led full product and technical delivery.',
@@ -86,6 +95,8 @@ Key outcomes included:
     client: 'Secondry',
     period: 'Sep 2024 – Jan 2025',
     startYear: 2024,
+    dateStart: [2024, 9],
+    dateEnd: [2025, 1],
     category: 'professional',
     summary:
       'A Swedish fintech startup democratizing trade in unlisted shares. Built a secure, scalable MVP with BankID authentication, anonymous negotiation chat, real-time bidding, and automated contract/e-signature generation.',
@@ -112,6 +123,8 @@ Delivered a working MVP where users can browse listed companies, sell, place bid
     client: 'All White Online',
     period: 'Feb 2024 – Apr 2025',
     startYear: 2024,
+    dateStart: [2024, 2],
+    dateEnd: [2025, 4],
     category: 'professional',
     summary:
       'An automated competitive pricing intelligence system for a European e-commerce company, scraping thousands of product pages, normalizing data, and visualizing price gaps to drive smart pricing decisions and improve Google Ads ROAS.',
@@ -144,6 +157,8 @@ Key outcomes:
     client: 'Ingenius',
     period: 'Jun 2023 – Feb 2024',
     startYear: 2023,
+    dateStart: [2023, 6],
+    dateEnd: [2024, 2],
     category: 'professional',
     summary:
       'A globally scalable EdTech platform with AI-generated course content, adaptive learning schedules, video streaming, and detailed engagement analytics — designed to reduce learning time and increase retention through personalization.',
@@ -174,6 +189,8 @@ Key deliverables:
     client: 'Celebratix',
     period: 'Feb 2023 – Jun 2023',
     startYear: 2023,
+    dateStart: [2023, 2],
+    dateEnd: [2023, 6],
     category: 'professional',
     summary:
       'A B2B2C ticketing platform for events and festivals built for a Dutch company. Full-stack delivery including primary and secondary market ticketing, QR code generation, organizer admin panels, and ETL pipelines for analytics.',
@@ -201,6 +218,8 @@ Key outcomes:
     client: 'ABB',
     period: 'Feb 2021 – Jul 2022',
     startYear: 2021,
+    dateStart: [2021, 2],
+    dateEnd: [2022, 7],
     category: 'professional',
     summary:
       'Designed and built the Industry 4.0 cloud architecture for ABB — a world-leading automation provider — enabling centralized monitoring and control of autonomous factories, bridging legacy standalone robot cells to a modern cloud platform.',
@@ -226,6 +245,8 @@ Target architecture for Industry 4.0: a cloud-based central solution for compreh
     client: '2M Engineering (Netherlands)',
     period: 'Feb 2019 – Sep 2020',
     startYear: 2019,
+    dateStart: [2019, 2],
+    dateEnd: [2020, 9],
     category: 'professional',
     summary:
       'Developed digital rehabilitation products for motion analysis and a modular SDK for commercial development. Built real-time 3D visualization for home-based stroke recovery and hand therapy using sensor-equipped wearables.',
@@ -258,6 +279,8 @@ Key outcomes:
     client: "Yoshida's Space Robotics Lab, Japan",
     period: 'Apr 2017 – Feb 2018',
     startYear: 2017,
+    dateStart: [2017, 4],
+    dateEnd: [2018, 2],
     category: 'academic',
     summary:
       'A research project linked to the Google Lunar X Prize initiative in Japan. Developed autonomous swarm formation algorithms and a modular LTE communication protocol for remote-controlled miniature moon-exploration robots.',
@@ -285,6 +308,8 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     client: 'Engineers Without Borders (EWB)',
     period: '2018 – 2020',
     startYear: 2018,
+    dateStart: [2018, 1],
+    dateEnd: [2020, 12],
     category: 'hobby',
     summary:
       'Volunteered with Engineers Without Borders to create workshops and teaching materials on basic electronics and programming for high school students in Mozambique, building a sustainable local summer course over 5 years.',
@@ -309,6 +334,8 @@ More information: [ewbnl.org — Schools of the Future Mozambique](https://www.e
     client: 'Technische Universiteit Eindhoven',
     period: 'Jan 2018 – Jun 2018',
     startYear: 2018,
+    dateStart: [2018, 1],
+    dateEnd: [2018, 6],
     category: 'academic',
     summary:
       'Exchange semester at one of Europe\'s top technical universities, covering Business Intelligence, Process Mining, Machine Learning, Signal Processing, Image Encoding/Decoding, and App Development.',
@@ -334,6 +361,8 @@ This international experience not only broadened Robin's technical foundations b
     client: 'Mälardalen University & Jönköping University',
     period: 'Aug 2014 – Jun 2022',
     startYear: 2014,
+    dateStart: [2014, 8],
+    dateEnd: [2022, 6],
     category: 'academic',
     summary:
       'Civil Engineering degree in Robotics (300 credits) with software and architecture as main area, completing three Master\'s-level theses in Computer & Data Science focused on tracking algorithms, AI/ML, and modular design. Followed by an MSc in AI (90 credits).',

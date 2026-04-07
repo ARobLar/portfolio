@@ -97,5 +97,6 @@ export default function NavBar({ onBookCall }: NavBarProps) {
 const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
+  { label: 'Timeline', href: '#timeline' },
   { label: 'Projects', href: '#projects' },
 ]

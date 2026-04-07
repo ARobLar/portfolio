@@ -5,6 +5,7 @@ import MeetingModal from '@/components/MeetingModal'
 import CompanyBanner from '@/components/CompanyBanner'
 import ProjectTabs from '@/components/ProjectTabs'
 import NavBar from '@/components/NavBar'
+import Timeline from '@/components/Timeline'
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -117,6 +118,9 @@ export default function Home() {
 
       {/* ─── Company Banner ────────────────────────────────────── */}
       <CompanyBanner />
+
+      {/* ─── Timeline ──────────────────────────────────────────── */}
+      <Timeline />
 
       {/* ─── Projects ──────────────────────────────────────────── */}
       <section id="projects" className="mx-auto max-w-6xl px-6 py-20">
