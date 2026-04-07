@@ -14,12 +14,12 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^25",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2",
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }
