@@ -1,19 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import MeetingModal from '@/components/MeetingModal'
 import CompanyBanner from '@/components/CompanyBanner'
 import ProjectTabs from '@/components/ProjectTabs'
 import NavBar from '@/components/NavBar'
 import Timeline from '@/components/Timeline'
 import CircuitBoard from '@/components/CircuitBoard'
+import { SocialLinks } from '@/components/SocialLinks'
 
 export default function Home() {
-  const [modalOpen, setModalOpen] = useState(false)
-
   return (
     <main className="min-h-screen bg-white">
-      <NavBar onBookCall={() => setModalOpen(true)} />
+      <NavBar />
 
       {/* ─── Hero ──────────────────────────────────────────────── */}
       <section
@@ -63,18 +60,13 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
-            <button
-              onClick={() => setModalOpen(true)}
-              className="w-full rounded-lg bg-blue-500 px-8 py-3.5 text-base font-semibold text-white shadow-lg transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 sm:w-auto"
-            >
-              Book a call
-            </button>
+          <div className="mt-10 flex flex-col items-center gap-4">
+            <SocialLinks />
             <a
               href="#projects"
-              className="w-full rounded-lg bg-white/10 px-8 py-3.5 text-center text-base font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20 sm:w-auto"
+              className="rounded-lg bg-white/10 px-8 py-3 text-sm font-semibold text-white/80 ring-1 ring-white/20 transition hover:bg-white/20 hover:text-white"
             >
-              View my work
+              View my work ↓
             </a>
           </div>
         </div>
@@ -141,8 +133,6 @@ export default function Home() {
         </p>
       </footer>
 
-      {/* ─── Meeting Modal ─────────────────────────────────────── */}
-      {modalOpen && <MeetingModal onClose={() => setModalOpen(false)} />}
     </main>
   )
 }
