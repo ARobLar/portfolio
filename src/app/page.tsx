@@ -18,7 +18,8 @@ export default function Home() {
       {/* ─── Hero ──────────────────────────────────────────────── */}
       <section
         id="about"
-        className="relative overflow-hidden bg-[#051505] text-white"
+        className="relative overflow-hidden text-white"
+        style={{ background: '#051505', minHeight: '520px' }}
       >
         {/* Animated circuit board background */}
         <CircuitBoard />

@@ -294,8 +294,15 @@ export default function CircuitBoard() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="absolute inset-0"
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'block',
+        pointerEvents: 'none',
+      }}
     />
   )
 }
