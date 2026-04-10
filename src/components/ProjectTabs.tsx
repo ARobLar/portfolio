@@ -36,30 +36,32 @@ export default function ProjectTabs() {
 
   return (
     <div>
-      {/* Tab bar */}
-      <div className="flex gap-1 rounded-xl bg-slate-100 p-1 sm:inline-flex">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 rounded-lg px-5 py-2 text-sm font-semibold transition-all sm:flex-none ${
-              activeTab === tab.id
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            {tab.label}
-            {tab.id !== 'search' && (
-              <span
-                className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                  activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-500'
-                }`}
-              >
-                {projects.filter((p) => p.category === tab.id).length}
-              </span>
-            )}
-          </button>
-        ))}
+      {/* Tab bar — scrollable on mobile */}
+      <div className="-mx-6 overflow-x-auto px-6 sm:mx-0 sm:overflow-visible sm:px-0">
+        <div className="flex w-max gap-1 rounded-xl bg-slate-100 p-1 sm:w-auto sm:inline-flex">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-none whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-all sm:px-5 ${
+                activeTab === tab.id
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              {tab.label}
+              {tab.id !== 'search' && (
+                <span
+                  className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                    activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-500'
+                  }`}
+                >
+                  {projects.filter((p) => p.category === tab.id).length}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Search input */}

@@ -6,6 +6,7 @@ import CompanyBanner from '@/components/CompanyBanner'
 import ProjectTabs from '@/components/ProjectTabs'
 import NavBar from '@/components/NavBar'
 import Timeline from '@/components/Timeline'
+import CircuitBoard from '@/components/CircuitBoard'
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -17,72 +18,63 @@ export default function Home() {
       {/* ─── Hero ──────────────────────────────────────────────── */}
       <section
         id="about"
-        className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white"
+        className="relative overflow-hidden bg-[#051505] text-white"
       >
-        {/* decorative grid */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-10"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.15) 1px,transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
+        {/* Animated circuit board background */}
+        <CircuitBoard />
 
-        <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-36 lg:py-44">
-          <div className="max-w-3xl">
-            <span className="mb-4 inline-block rounded-full bg-blue-500/20 px-4 py-1 text-sm font-medium text-blue-300 ring-1 ring-blue-400/30">
-              Available for new engagements
-            </span>
+        <div className="relative z-10 mx-auto max-w-3xl px-6 py-28 text-center md:py-36 lg:py-44">
+          <span className="mb-4 inline-block rounded-full bg-blue-500/20 px-4 py-1 text-sm font-medium text-blue-300 ring-1 ring-blue-400/30">
+            Available for new engagements
+          </span>
 
-            <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Robin Larsson
-              <span className="block text-blue-400">Senior AI & Software Consultant</span>
-            </h1>
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            Robin Larsson
+            <span className="block text-blue-400">Senior AI & Software Consultant</span>
+          </h1>
 
-            <p className="mt-6 text-lg leading-relaxed text-slate-300 sm:text-xl">
-              I build digital platforms with AI integrations — from MVP to production-grade systems.
-              With 8+ years of experience across Sweden, the Netherlands, and Japan, I combine deep
-              technical expertise with sharp business acumen to turn ideas into scalable solutions.
-            </p>
+          <p className="mt-6 text-lg leading-relaxed text-slate-300 sm:text-xl">
+            I build digital platforms with AI integrations — from MVP to production-grade systems.
+            With 8+ years of experience across Sweden, the Netherlands, and Japan, I combine deep
+            technical expertise with sharp business acumen to turn ideas into scalable solutions.
+          </p>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-400">
-              MSc Robotics · MSc AI · Background in startups, high-critical systems & R&D.
-              Currently Senior Consultant at Sopra Steria.
-            </p>
+          <p className="mt-4 text-base leading-relaxed text-slate-400">
+            MSc Robotics · MSc AI · Background in startups, high-critical systems & R&D.
+            Currently Senior Consultant at Sopra Steria.
+          </p>
 
-            {/* Service pills */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              {[
-                'Agentic AI',
-                'Solution Architecture',
-                'Technical Ownership',
-                'Full Stack Engineering',
-                'Data Engineering',
-              ].map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/20"
-                >
-                  {s}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="rounded-lg bg-blue-500 px-8 py-3.5 text-base font-semibold text-white shadow-lg transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          {/* Service pills */}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {[
+              'Agentic AI',
+              'Solution Architecture',
+              'Technical Ownership',
+              'Full Stack Engineering',
+              'Data Engineering',
+            ].map((s) => (
+              <span
+                key={s}
+                className="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/20"
               >
-                Book a call
-              </button>
-              <a
-                href="#projects"
-                className="rounded-lg bg-white/10 px-8 py-3.5 text-base font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20"
-              >
-                View my work
-              </a>
-            </div>
+                {s}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="w-full rounded-lg bg-blue-500 px-8 py-3.5 text-base font-semibold text-white shadow-lg transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 sm:w-auto"
+            >
+              Book a call
+            </button>
+            <a
+              href="#projects"
+              className="w-full rounded-lg bg-white/10 px-8 py-3.5 text-center text-base font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20 sm:w-auto"
+            >
+              View my work
+            </a>
           </div>
         </div>
 

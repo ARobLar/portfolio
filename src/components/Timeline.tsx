@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { projects } from '@/data/projects'
 import type { Project } from '@/data/projects'
@@ -52,6 +52,7 @@ function assignLanes(items: LanedProject[]): LanedProject[] {
 
 export default function Timeline() {
   const [tooltip, setTooltip] = useState<{ project: Project; x: number; y: number } | null>(null)
+  const chartRef = useRef<HTMLDivElement>(null)
 
   const { laned, minYear, maxYear, totalSpan, laneCount, yearMarkers } = useMemo(() => {
     const raw: LanedProject[] = projects
@@ -76,9 +77,9 @@ export default function Timeline() {
     return { laned, minYear, maxYear, totalSpan, laneCount, yearMarkers }
   }, [])
 
-  const LANE_H = 36   // px per lane
+  const LANE_H = 40   // px per lane
   const LANE_GAP = 8  // px between lanes
-  const BAR_H = 26    // px bar height
+  const BAR_H = 30    // px bar height
   const HEADER_H = 28 // px for year labels
   const totalH = HEADER_H + laneCount * (LANE_H + LANE_GAP)
 
@@ -105,10 +106,12 @@ export default function Timeline() {
 
       {/* Chart — horizontally scrollable on mobile */}
       <div className="relative mt-8 overflow-x-auto rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
+        <p className="mb-2 text-right text-[11px] text-slate-400 sm:hidden">← Scroll to explore →</p>
         <div
+          ref={chartRef}
           className="relative w-full"
           style={{ height: totalH, minWidth: 600 }}
-          onMouseLeave={() => setTooltip(null)}
+          onPointerLeave={() => setTooltip(null)}
         >
           {/* Year grid lines + labels */}
           {yearMarkers.map((y) => {
@@ -156,7 +159,7 @@ export default function Timeline() {
                   height: BAR_H,
                   minWidth: 4,
                 }}
-                onMouseEnter={(e) => {
+                onPointerEnter={(e) => {
                   const rect = (e.currentTarget as HTMLElement)
                     .closest('.relative')!
                     .getBoundingClientRect()
@@ -167,7 +170,7 @@ export default function Timeline() {
                     y: top,
                   })
                 }}
-                onMouseLeave={() => setTooltip(null)}
+                onPointerLeave={() => setTooltip(null)}
               >
                 {/* Label inside bar if wide enough */}
                 <span className="absolute inset-0 flex items-center px-2 overflow-hidden">
@@ -182,10 +185,10 @@ export default function Timeline() {
           {/* Tooltip */}
           {tooltip && (
             <div
-              className="pointer-events-none absolute z-30 w-64 rounded-xl bg-slate-900 p-3 shadow-xl text-white text-xs"
+              className="pointer-events-none absolute z-30 w-56 rounded-xl bg-slate-900 p-3 shadow-xl text-white text-xs sm:w-64"
               style={{
-                left: Math.min(tooltip.x, 9999),
-                top: tooltip.y - 90,
+                left: Math.max(112, Math.min(tooltip.x, (chartRef.current?.offsetWidth ?? 9999) - 112)),
+                top: Math.max(0, tooltip.y - 95),
                 transform: 'translateX(-50%)',
               }}
             >

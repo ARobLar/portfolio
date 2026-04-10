@@ -30,11 +30,11 @@ export default function MeetingModal({ onClose }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Compose a mailto link and open it
-    const subject = encodeURIComponent(`Meeting request from ${name}${company ? ` (${company})` : ''}`)
+    const subject = encodeURIComponent(`Robins Consultancy Contact — Meeting request from ${name}${company ? ` (${company})` : ''}`)
     const body = encodeURIComponent(
       `Hi Robin,\n\nI'd like to schedule a call.\n\nName: ${name}\nEmail: ${email}\nCompany: ${company}\n\nMessage:\n${message}`
     )
-    window.open(`mailto:robin@soprasteria.se?subject=${subject}&body=${body}`)
+    window.open(`mailto:a.robin.larsson@gmail.com?subject=${subject}&body=${body}`)
     setSent(true)
   }
 
@@ -44,9 +44,9 @@ export default function MeetingModal({ onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 backdrop-blur-sm"
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
-      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+      <div className="relative w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl" style={{ maxHeight: '90dvh' }}>
         {/* Header */}
-        <div className="flex items-start justify-between rounded-t-2xl bg-gradient-to-r from-slate-900 to-blue-900 p-7">
+        <div className="flex items-start justify-between rounded-t-2xl bg-gradient-to-r from-slate-900 to-blue-900 p-5 sm:p-7">
           <div>
             <h2 className="text-xl font-bold text-white">Book a call</h2>
             <p className="mt-1 text-sm text-slate-300">Tell me a bit about your project — I'll get back to you within 24h.</p>
@@ -77,8 +77,8 @@ export default function MeetingModal({ onClose }: Props) {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 p-7">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-5 p-5 sm:p-7">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Your name *

@@ -72,7 +72,7 @@ export default function ProjectPage({ params }: Props) {
         </div>
       </div>
 
-      <article className="mx-auto max-w-4xl px-6 py-12">
+      <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
         {/* Meta */}
         <div className="flex flex-wrap items-center gap-3">
           <span
@@ -151,14 +151,14 @@ export default function ProjectPage({ params }: Props) {
         </div>
 
         {/* CTA */}
-        <div className="mt-14 rounded-2xl bg-gradient-to-br from-slate-900 to-blue-900 p-8 text-center text-white">
+        <div className="mt-14 rounded-2xl bg-gradient-to-br from-slate-900 to-blue-900 p-6 text-center text-white sm:p-8">
           <h2 className="text-xl font-bold">Interested in working together?</h2>
           <p className="mt-2 text-slate-300">
             I'm available for new engagements. Let's talk about your project.
           </p>
           <a
             href="/"
-            className="mt-6 inline-block rounded-lg bg-blue-500 px-8 py-3 text-sm font-semibold text-white shadow hover:bg-blue-400"
+            className="mt-6 inline-block w-full rounded-lg bg-blue-500 px-8 py-3 text-sm font-semibold text-white shadow hover:bg-blue-400 sm:w-auto"
           >
             Book a call on the homepage
           </a>

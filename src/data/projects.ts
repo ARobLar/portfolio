@@ -356,42 +356,141 @@ This international experience not only broadened Robin's technical foundations b
     image: '/images/university.jpg',
   },
   {
-    slug: 'msc-robotics',
-    title: 'MSc Robotics & AI — Three Master\'s Theses',
-    client: 'Mälardalen University & Jönköping University',
-    period: 'Aug 2014 – Jun 2022',
+    slug: 'malardalen-civil-engineering',
+    title: 'Civil Engineer in Robotics — Three Master\'s Theses',
+    client: 'Mälardalen University',
+    period: 'Aug 2014 – Jun 2020',
     startYear: 2014,
     dateStart: [2014, 8],
+    dateEnd: [2020, 6],
+    category: 'academic',
+    summary:
+      '300-credit Civil Engineering degree in Robotics with Software & Architecture as main specialisation. Completed three Master\'s-level theses in Computer & Data Science, focusing on tracking algorithms, AI/ML, and modular system design. Secondary focus on hardware, mechanics, and embedded prototyping.',
+    fullDescription: `
+Mälardalen University's Civil Engineering programme in Robotics is one of Sweden's most comprehensive engineering degrees, spanning hardware, software, mechanics, and AI over 300 credits (5 years).
+
+**Main area: Software & Architecture**
+- Tracking algorithms for image and video analysis
+- AI/ML and classical statistics for analysis and automated problem solving
+- Completed **3 Master's-level theses** in Computer & Data Science, focused on algorithms and modular design
+
+**Secondary areas: Hardware & Mechanics**
+- Designing and building circuit boards (PCB) and physical prototypes based on specific requirement specifications
+- Embedded systems programming and sensor integration
+
+**Exchange semester at TU Eindhoven (Jan–Jun 2018)**
+- Business Intelligence, Process Mining, Machine Learning, Signal Processing, Image Encoding/Decoding, App Development
+
+**Research internship at Yoshida's Space Robotics Lab, Japan (2017–2018)**
+- Applied computer vision and edge computing on autonomous moon-exploration robots (see Koguma project)
+
+This degree gave Robin the rare ability to think from transistor to cloud — understanding hardware constraints while designing scalable software architectures.
+    `,
+    roles: ['Engineering Student', 'Graduate Researcher', 'Thesis Author'],
+    keywords: ['Robotics', 'Computer Vision', 'Signal Processing', 'Algorithm Design', 'Software Architecture', 'Embedded Systems', 'PCB Design', 'MATLAB', 'C++'],
+    image: '/images/robotics-academic.jpg',
+  },
+  {
+    slug: 'jonkoping-msc-ai',
+    title: 'MSc in Artificial Intelligence',
+    client: 'Jönköping University',
+    period: 'Aug 2021 – Jun 2022',
+    startYear: 2021,
+    dateStart: [2021, 8],
     dateEnd: [2022, 6],
     category: 'academic',
     summary:
-      'Civil Engineering degree in Robotics (300 credits) with software and architecture as main area, completing three Master\'s-level theses in Computer & Data Science focused on tracking algorithms, AI/ML, and modular design. Followed by an MSc in AI (90 credits).',
+      '90-credit Master of Science in AI at Jönköping University, covering advanced machine learning, deep learning, AI systems design, and applied research methodologies — pursued in parallel with the ABB Industry 4.0 engagement.',
     fullDescription: `
-Robin's academic journey culminated in two engineering degrees and three Master's-level theses, giving him a rare combination of hardware-to-cloud breadth with deep algorithmic foundations.
+Following his Civil Engineering degree, Robin pursued a focused Master of Science in Artificial Intelligence at Jönköping University to deepen his expertise at the frontier of the field.
 
-**Civil Engineer in Robotics — Mälardalen University (2014–2020, 300 credits)**
+The programme covered:
 
-Main area: Software and Architecture
-- Tracking algorithms for image/video analysis
-- AI/ML and classical statistics for analysis and automated problem solving
-- Completed **3 Master's-level theses** in Computer & Data Science, with focus on algorithms and modular design
+- **Advanced Machine Learning** — supervised, unsupervised, and reinforcement learning; model selection and evaluation
+- **Deep Learning** — neural network architectures, CNNs, RNNs, transformers, and modern training techniques
+- **AI Systems Design** — architecting AI-integrated systems for production, scalability, and reliability
+- **Applied Research Methodologies** — quantitative and qualitative methods, experiment design, academic writing
 
-Secondary areas: Hardware and Mechanics
-- Designing and building circuit boards and physical prototypes based on specific requirements
+This degree was completed alongside professional work (ABB Industry 4.0), demonstrating Robin's ability to balance high-intensity academic study with demanding consultancy engagements simultaneously.
 
-**MSc in AI — Jönköping University (2021–2022, 90 credits)**
-- Advanced machine learning and deep learning
-- AI systems design and implementation
-- Applied research methodologies
-
-**Exchange Studies — TU Eindhoven (Jan–Jun 2018)**
-- 6 courses in Business Intelligence, Process Mining, Machine Learning, Signal Processing, Image Encoding/Decoding, and App Development
-
-The combination of robotics engineering, AI specialization, and hands-on research shaped Robin into a consultant who can design systems from sensor to cloud, from algorithm to product.
+The MSc directly informs his current specialisation in agentic AI, LLM integrations, and AI-driven platform development.
     `,
-    roles: ['Graduate Researcher', 'Thesis Author'],
-    keywords: ['Robotics', 'AI', 'Machine Learning', 'Computer Vision', 'Signal Processing', 'Algorithm Design', 'Research', 'Software Architecture'],
-    image: '/images/robotics-academic.jpg',
+    roles: ['Graduate Student', 'Researcher'],
+    keywords: ['Machine Learning', 'Deep Learning', 'AI Systems', 'Neural Networks', 'Transformers', 'Research Methods', 'Python', 'Applied AI'],
+    image: '/images/university.jpg',
+    featured: true,
+  },
+  {
+    slug: 'ubit-consulting',
+    title: 'Ubit — Digital Startup Consulting',
+    client: 'Ubit (own company)',
+    period: 'Feb 2023 – Apr 2025',
+    startYear: 2023,
+    dateStart: [2023, 2],
+    dateEnd: [2025, 4],
+    category: 'professional',
+    summary:
+      'Founded and ran Ubit, a digital consulting firm helping non-technical startup founders build their first MVP or MLP. Delivered five platforms across EdTech, fintech, e-commerce, events, and retail media — all as sole technical lead.',
+    fullDescription: `
+Ubit was Robin's own digital startup consultancy, founded to help non-technical founders turn ideas into testable, investable digital products.
+
+**The model:** Work directly with founders to build a platform validating their 2–3 core hypotheses, with 1–2 years of future development in mind — written so other developers could continue it cleanly.
+
+**Engagements delivered under Ubit:**
+
+- **Ingenius** (Jun 2023 – Feb 2024) — AI-personalised global EdTech platform
+- **Celebratix** (Feb 2023 – Jun 2023) — B2B2C event ticketing for Netherlands festivals
+- **Secondry** (Sep 2024 – Jan 2025) — Fintech platform for trading unlisted Swedish shares
+- **All White Online / Price Engine** (Feb 2024 – Apr 2025) — Competitive pricing intelligence for European e-commerce
+- **Elefant** (Feb 2024 – Apr 2025) — Retail Media Network with physical + digital advertising
+
+**Additional services delivered:**
+- Data analysis and growth hacking
+- Exit-strategy development (building asset value for acquisition)
+- UI/UX design and information architecture
+- SEO ranking improvement
+- Product strategy using LEAN Startup, Agile, and Blue/Red Ocean frameworks
+
+Robin operated as sole technical owner on each engagement — from first conversation with the founder to production deployment.
+    `,
+    roles: ['Founder', 'Tech Lead', 'Solution Architect', 'Full Stack Developer'],
+    keywords: ['LEAN Startup', 'MVP Development', 'Product Strategy', 'Full Stack', 'Growth Hacking', 'SEO', 'Architecture', 'Startup Consulting'],
+    image: '/images/consulting.jpg',
+  },
+  {
+    slug: 'sopra-steria',
+    title: 'Sopra Steria — Senior AI & Software Consultant',
+    client: 'Sopra Steria',
+    period: 'May 2025 – Present',
+    startYear: 2025,
+    dateStart: [2025, 5],
+    dateEnd: null,
+    category: 'professional',
+    summary:
+      'Employed as a Senior Consultant at Sopra Steria — one of Europe\'s leading IT and digital transformation consultancies — delivering AI integrations and .NET development across public and private sector clients in Sweden.',
+    fullDescription: `
+Sopra Steria is one of Europe's leading IT consulting and digital transformation firms, with over 50,000 employees across 30 countries. Robin joined as a Senior Consultant in May 2025.
+
+**Current engagement: Region Stockholm — Hjälpmedelsportalen (May 2025 – Feb 2026)**
+
+Working as Technical Owner, Solution Architect, .NET Developer, Tester, and Requirements Manager on the Stockholm Region's Assistive Devices Portal — a production system serving 300+ healthcare suppliers across the Stockholm County.
+
+See the [Hjälpmedelsportalen project](/projects/hjalpmedelsportalen/) for full details.
+
+**Role at Sopra Steria:**
+
+Robin operates at the intersection of technical delivery and client advisory — taking broad responsibility across the full development chain, from architecture decisions and stakeholder communication to hands-on implementation and quality assurance.
+
+His focus areas within Sopra Steria align with the firm's AI & Data practice and .NET engineering capability:
+- AI integration and agentic system design
+- Solution architecture for public sector platforms
+- Technical ownership of complex integration projects
+- Full-stack .NET development (C#, EF Core, REST APIs, Azure)
+    `,
+    roles: ['Senior Consultant', 'Technical Owner', 'Solution Architect', '.NET Developer'],
+    keywords: ['.NET Core', 'C#', 'Azure', 'AI Integration', 'Solution Architecture', 'Public Sector', 'Technical Ownership', 'Consulting'],
+    image: '/images/consulting.jpg',
+    featured: true,
   },
 ]
 
