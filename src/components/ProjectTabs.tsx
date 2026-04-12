@@ -5,34 +5,41 @@ import { projects } from '@/data/projects'
 import ProjectCard from './ProjectCard'
 import type { ProjectCategory } from '@/data/projects'
 
-type Tab = ProjectCategory | 'search'
+type Tab = ProjectCategory | 'all'
 
 const tabs: { id: Tab; label: string }[] = [
+  { id: 'all',          label: 'All' },
   { id: 'professional', label: 'Professional' },
-  { id: 'hobby', label: 'Hobby' },
-  { id: 'academic', label: 'Academic' },
-  { id: 'search', label: 'Search' },
+  { id: 'hobby',        label: 'Hobby' },
+  { id: 'academic',     label: 'Academic' },
 ]
 
 export default function ProjectTabs() {
-  const [activeTab, setActiveTab] = useState<Tab>('professional')
+  const [activeTab, setActiveTab] = useState<Tab>('all')
   const [query, setQuery] = useState('')
 
   const displayed = useMemo(() => {
-    if (activeTab === 'search') {
-      if (!query.trim()) return projects
-      const q = query.toLowerCase()
-      return projects.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.client.toLowerCase().includes(q) ||
-          p.summary.toLowerCase().includes(q) ||
-          p.keywords.some((k) => k.toLowerCase().includes(q)) ||
-          p.roles.some((r) => r.toLowerCase().includes(q))
-      )
-    }
-    return projects.filter((p) => p.category === activeTab)
+    const base =
+      activeTab === 'all'
+        ? projects
+        : projects.filter((p) => p.category === activeTab)
+
+    if (!query.trim()) return base
+    const q = query.toLowerCase()
+    return base.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.client.toLowerCase().includes(q) ||
+        p.summary.toLowerCase().includes(q) ||
+        p.keywords.some((k) => k.toLowerCase().includes(q)) ||
+        p.roles.some((r) => r.toLowerCase().includes(q)),
+    )
   }, [activeTab, query])
+
+  const tabCount = (tab: Tab) =>
+    tab === 'all'
+      ? projects.length
+      : projects.filter((p) => p.category === tab).length
 
   return (
     <div>
@@ -50,55 +57,52 @@ export default function ProjectTabs() {
               }`}
             >
               {tab.label}
-              {tab.id !== 'search' && (
-                <span
-                  className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                    activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-500'
-                  }`}
-                >
-                  {projects.filter((p) => p.category === tab.id).length}
-                </span>
-              )}
+              <span
+                className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                  activeTab === tab.id
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-slate-200 text-slate-500'
+                }`}
+              >
+                {tabCount(tab.id)}
+              </span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Search input */}
-      {activeTab === 'search' && (
-        <div className="mt-6">
-          <div className="relative">
-            <svg
-              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              autoFocus
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title, client, role, or technology..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+      {/* Search bar — visible on all tabs */}
+      <div className="mt-5">
+        <div className="relative">
+          <svg
+            className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
-          </div>
-          {query && (
-            <p className="mt-3 text-sm text-slate-500">
-              {displayed.length === 0
-                ? 'No projects matched your search.'
-                : `${displayed.length} project${displayed.length !== 1 ? 's' : ''} found`}
-            </p>
-          )}
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by title, client, role, or technology…"
+            className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
         </div>
-      )}
+        {query && (
+          <p className="mt-2 text-sm text-slate-500">
+            {displayed.length === 0
+              ? 'No projects matched your search.'
+              : `${displayed.length} project${displayed.length !== 1 ? 's' : ''} found`}
+          </p>
+        )}
+      </div>
 
       {/* Grid */}
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -107,7 +111,7 @@ export default function ProjectTabs() {
         ))}
       </div>
 
-      {displayed.length === 0 && activeTab !== 'search' && (
+      {displayed.length === 0 && !query && (
         <p className="mt-8 text-sm text-slate-400">No projects in this category yet.</p>
       )}
     </div>

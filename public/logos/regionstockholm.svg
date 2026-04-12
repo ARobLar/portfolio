@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
-  <rect width="240" height="60" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 60" width="160" height="60">
+  <rect width="160" height="60" fill="white"/>
   <!-- Red accent bar -->
   <rect x="0" y="0" width="8" height="60" fill="#E30613"/>
   <!-- "REGION" text -->

@@ -2,284 +2,376 @@
 
 import { useEffect, useRef } from 'react'
 
-// ── Visual constants ─────────────────────────────────────────────────────────
-const CELL        = 20          // grid cell size in px
-const BG          = '#051505'   // dark PCB green
-const COPPER      = '#b87333'   // copper trace colour
-const COPPER_DIM  = '#7a4e22'   // slightly dimmer copper
-const VIA         = '#d4a843'   // via pad gold
-const CPU_FILL    = '#0c0c0c'   // CPU die (black)
-const CPU_BORDER  = '#2d2d2d'   // CPU edge highlight
-const PIN_COL     = '#b0b0b0'   // SMD pad silver
-const DOT_COL     = 'rgba(0,70,0,0.55)' // PCB substrate dots
+// ── Visual constants ──────────────────────────────────────────────────────────
+const CELL      = 18                        // grid pitch px
+const CORNER_R  = 6                         // arcTo corner radius px
+const BG        = '#050f05'                 // dark PCB substrate
+const DOT       = 'rgba(0,55,0,0.55)'       // substrate via-holes grid
+const COPPER    = '#c8752a'                 // trace fill
+const GLOW_COL  = '#ff9944'                 // shadow glow colour
+const CPU_DARK  = '#0a0a0a'
+const PAD_COL   = '#c0c0c0'                 // SMD silver pads
+const VIA_GOLD  = '#d4a843'
 
-interface Pt { x: number; y: number }
+interface Pt { gx: number; gy: number }
 
-// ── Path builder ─────────────────────────────────────────────────────────────
+// ── Grid-based path builder ───────────────────────────────────────────────────
 function buildPaths(
-  cols: number,
-  rows: number,
-  cpuX: number,
-  cpuY: number,
-  cpuW: number,
-  cpuH: number,
+  cols: number, rows: number,
+  cgx: number, cgy: number, cgw: number, cgh: number,
 ): Pt[][] {
-  const k         = (x: number, y: number) => `${x},${y}`
-  const occupied  = new Set<string>()
+  const key = (x: number, y: number) => `${x},${y}`
+  const occ = new Set<string>()
 
-  // Block CPU body + 1-cell clearance buffer
-  for (let x = cpuX - 2; x <= cpuX + cpuW + 1; x++)
-    for (let y = cpuY - 2; y <= cpuY + cpuH + 1; y++)
-      occupied.add(k(x, y))
+  // Block CPU die + 2-cell clearance
+  for (let x = cgx - 2; x <= cgx + cgw + 1; x++)
+    for (let y = cgy - 2; y <= cgy + cgh + 1; y++)
+      occ.add(key(x, y))
 
-  // ── Pin layout ────────────────────────────────────────────────────────────
-  const pinsH = Math.max(4, Math.floor(cpuH / 3))   // pins on left/right side
-  const pinsW = Math.max(4, Math.floor(cpuW / 3))   // pins on top/bottom
+  // Pin positions: every PIN_STEP cells along each edge
+  const PIN_STEP = 3
+  const topOffsets: number[] = []
+  for (let i = PIN_STEP; i < cgw - 1; i += PIN_STEP) topOffsets.push(i)
+  const sideOffsets: number[] = []
+  for (let i = PIN_STEP; i < cgh - 1; i += PIN_STEP) sideOffsets.push(i)
 
-  const linspace = (count: number, len: number) =>
-    Array.from({ length: count }, (_, i) =>
-      Math.round(1 + (i * (len - 2)) / Math.max(1, count - 1)),
-    )
-
-  const pins: { sx: number; sy: number; dx: number; dy: number }[] = []
-
-  linspace(pinsW, cpuW).forEach(o => {
-    pins.push({ sx: cpuX + o, sy: cpuY - 1,     dx:  0, dy: -1 }) // top
-    pins.push({ sx: cpuX + o, sy: cpuY + cpuH,  dx:  0, dy:  1 }) // bottom
+  const pins: { gx: number; gy: number; dx: number; dy: number }[] = []
+  topOffsets.forEach(o => {
+    pins.push({ gx: cgx + o, gy: cgy - 1,      dx: 0,  dy: -1 })
+    pins.push({ gx: cgx + o, gy: cgy + cgh,     dx: 0,  dy:  1 })
   })
-  linspace(pinsH, cpuH).forEach(o => {
-    pins.push({ sx: cpuX - 1,      sy: cpuY + o, dx: -1, dy: 0 }) // left
-    pins.push({ sx: cpuX + cpuW,   sy: cpuY + o, dx:  1, dy: 0 }) // right
+  sideOffsets.forEach(o => {
+    pins.push({ gx: cgx - 1,      gy: cgy + o,  dx: -1, dy: 0 })
+    pins.push({ gx: cgx + cgw,    gy: cgy + o,  dx:  1, dy: 0 })
   })
 
-  // Allow pin cells (they start unblocked so the trace can begin there)
-  pins.forEach(p => occupied.delete(k(p.sx, p.sy)))
+  // Free pin cells from occupancy (they are path start points)
+  pins.forEach(p => occ.delete(key(p.gx, p.gy)))
 
-  // ── Random-walk path builder ──────────────────────────────────────────────
-  const paths: Pt[][] = pins.map(pin => {
-    const path: Pt[] = [{ x: pin.sx, y: pin.sy }]
-    occupied.add(k(pin.sx, pin.sy))
-
-    let cx = pin.sx, cy = pin.sy
-    let dx = pin.dx, dy = pin.dy
+  return pins.map(pin => {
+    const path: Pt[] = [{ gx: pin.gx, gy: pin.gy }]
+    occ.add(key(pin.gx, pin.gy))
+    let cx = pin.gx, cy = pin.gy, dx = pin.dx, dy = pin.dy
     let budget = 400
 
     while (budget-- > 0) {
-      // Option list: prefer current direction (2× weight), allow perpendicular turns
+      // Prefer straight (3× weight), allow perpendicular turns
       const opts: [number, number][] =
         dx !== 0
-          ? [[dx, dy], [dx, dy],  [0, 1],  [0, -1]]
-          : [[dx, dy], [dx, dy],  [1, 0], [-1,  0]]
+          ? [[dx, dy], [dx, dy], [dx, dy], [0, 1], [0, -1]]
+          : [[dx, dy], [dx, dy], [dx, dy], [1, 0], [-1, 0]]
 
-      // Fisher-Yates shuffle
       for (let i = opts.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
+        const j = (Math.random() * (i + 1)) | 0
         ;[opts[i], opts[j]] = [opts[j], opts[i]]
       }
 
       let moved = false
       for (const [ndx, ndy] of opts) {
-        const nx = cx + ndx
-        const ny = cy + ndy
+        const nx = cx + ndx, ny = cy + ndy
         if (nx < 1 || nx >= cols - 1 || ny < 1 || ny >= rows - 1) continue
-        if (occupied.has(k(nx, ny))) continue
-
-        occupied.add(k(nx, ny))
-        path.push({ x: nx, y: ny })
-        dx = ndx; dy = ndy
-        cx = nx;  cy = ny
+        if (occ.has(key(nx, ny))) continue
+        occ.add(key(nx, ny))
+        path.push({ gx: nx, gy: ny })
+        dx = ndx; dy = ndy; cx = nx; cy = ny
         moved = true
         break
       }
-
       if (!moved) break
-      // Stop when the trace reaches the outer 1-cell margin
       if (cx <= 1 || cx >= cols - 2 || cy <= 1 || cy >= rows - 2) break
     }
-
     return path
   })
-
-  return paths
 }
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const cpx = (gx: number) => (gx + 0.5) * CELL
+const cpy = (gy: number) => (gy + 0.5) * CELL
+
+/** Approximate pixel length of a path (straight segments — slight overestimate
+ *  vs arcTo which trims corners; ensures full reveal before t reaches 1). */
+function pathPxLen(pts: Pt[]): number {
+  let l = 0
+  for (let i = 1; i < pts.length; i++) {
+    const dx = (pts[i].gx - pts[i - 1].gx) * CELL
+    const dy = (pts[i].gy - pts[i - 1].gy) * CELL
+    l += Math.sqrt(dx * dx + dy * dy)
+  }
+  return l
+}
+
+/** Draw path using arcTo for smooth rounded corners */
+function tracePath(ctx: CanvasRenderingContext2D, pts: Pt[]) {
+  if (pts.length < 2) return
+  ctx.beginPath()
+  ctx.moveTo(cpx(pts[0].gx), cpy(pts[0].gy))
+  for (let i = 1; i < pts.length - 1; i++) {
+    ctx.arcTo(
+      cpx(pts[i].gx), cpy(pts[i].gy),
+      cpx(pts[i + 1].gx), cpy(pts[i + 1].gy),
+      CORNER_R,
+    )
+  }
+  ctx.lineTo(cpx(pts[pts.length - 1].gx), cpy(pts[pts.length - 1].gy))
+  ctx.stroke()
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function CircuitBoard() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas = ref.current
     if (!canvas) return
     const parent = canvas.parentElement!
-
     let raf = 0
 
     function init() {
       if (!canvas) return
       cancelAnimationFrame(raf)
 
-      // Match canvas pixel dimensions to parent layout dimensions
       canvas.width  = parent.offsetWidth
       canvas.height = parent.offsetHeight
 
-      const W    = canvas.width
-      const H    = canvas.height
-      const ctx  = canvas.getContext('2d')!
+      const W = canvas.width
+      const H = canvas.height
+      const ctx = canvas.getContext('2d')!
+
       const cols = Math.floor(W / CELL)
       const rows = Math.floor(H / CELL)
 
-      // ── CPU geometry (grid cells) ─────────────────────────────────────────
-      // Keep a sensible aspect ratio; tall enough to suggest housing the text
-      const cpuW = Math.max(8, Math.round(cols * 0.18))
-      const cpuH = Math.max(8, Math.round(rows * 0.62))
-      const cpuX = Math.floor((cols - cpuW) / 2)
-      const cpuY = Math.floor((rows - cpuH) / 2)
+      // ── CPU size: wide + tall enough to frame all hero text ───────────────
+      // Target: cover the max-w-3xl text block (~720px wide, ~380px tall)
+      // plus generous margin so it reads as "the CPU holds the content".
+      const cpuPxW = Math.max(Math.min(W * 0.80, 860), Math.min(W - 40, 720))
+      const cpuPxH = Math.max(Math.min(H * 0.78, 520), Math.min(H - 60, 400))
+      const cgw    = Math.max(10, Math.floor(cpuPxW / CELL))
+      const cgh    = Math.max(10, Math.floor(cpuPxH / CELL))
+      const cgx    = Math.floor((cols - cgw) / 2)
+      const cgy    = Math.floor((rows - cgh) / 2)
 
-      // ── Build paths (randomised on every call → every resize / page load) ─
-      const paths = buildPaths(cols, rows, cpuX, cpuY, cpuW, cpuH)
+      // Pixel rect of the die
+      const DX = cgx * CELL
+      const DY = cgy * CELL
+      const DW = cgw * CELL
+      const DH = cgh * CELL
 
-      // ── Pin list (re-derived identically for drawing) ─────────────────────
-      const pinsH = Math.max(4, Math.floor(cpuH / 3))
-      const pinsW = Math.max(4, Math.floor(cpuW / 3))
-      const ls    = (count: number, len: number) =>
-        Array.from({ length: count }, (_, i) =>
-          Math.round(1 + (i * (len - 2)) / Math.max(1, count - 1)),
-        )
-      const pins: { sx: number; sy: number }[] = []
-      ls(pinsW, cpuW).forEach(o => {
-        pins.push({ sx: cpuX + o, sy: cpuY - 1    })
-        pins.push({ sx: cpuX + o, sy: cpuY + cpuH })
-      })
-      ls(pinsH, cpuH).forEach(o => {
-        pins.push({ sx: cpuX - 1,     sy: cpuY + o })
-        pins.push({ sx: cpuX + cpuW,  sy: cpuY + o })
-      })
+      // ── Build paths ───────────────────────────────────────────────────────
+      const paths  = buildPaths(cols, rows, cgx, cgy, cgw, cgh)
+      const lens   = paths.map(pathPxLen)
+      const maxLen = Math.max(...lens, 1)
 
-      const maxLen = Math.max(...paths.map(p => p.length))
-      let step = 0
-      const SPEED = 1 // cells advanced per frame — lower = slower reveal
+      // Stagger start times + durations proportional to path length
+      const TOTAL_MS   = 3600   // ms for the longest trace
+      const MAX_DELAY  = 700    // ms max stagger delay
+      const delays     = paths.map(() => Math.random() * MAX_DELAY)
+      const durations  = lens.map(l =>
+        (l / maxLen) * TOTAL_MS * 0.75 + TOTAL_MS * 0.25,
+      )
+      const finishTime = MAX_DELAY + TOTAL_MS + 200
 
-      // ── Draw one frame ────────────────────────────────────────────────────
-      function drawFrame(upTo: number) {
-        // Background
-        ctx.fillStyle = BG
-        ctx.fillRect(0, 0, W, H)
+      // ── Re-derive pad positions for rendering ─────────────────────────────
+      const PIN_STEP = 3
+      const pads: { gx: number; gy: number; horiz: boolean }[] = []
+      for (let i = PIN_STEP; i < cgw - 1; i += PIN_STEP) {
+        pads.push({ gx: cgx + i, gy: cgy - 1,    horiz: false })
+        pads.push({ gx: cgx + i, gy: cgy + cgh,   horiz: false })
+      }
+      for (let i = PIN_STEP; i < cgh - 1; i += PIN_STEP) {
+        pads.push({ gx: cgx - 1,      gy: cgy + i, horiz: true })
+        pads.push({ gx: cgx + cgw,    gy: cgy + i, horiz: true })
+      }
 
-        // PCB substrate dot grid
-        ctx.fillStyle = DOT_COL
-        for (let gx = 0; gx < cols; gx++)
-          for (let gy = 0; gy < rows; gy++) {
+      // ── Pre-draw substrate dot grid to offscreen canvas (static) ──────────
+      const dotCanvas = document.createElement('canvas')
+      dotCanvas.width  = W
+      dotCanvas.height = H
+      const dctx = dotCanvas.getContext('2d')!
+      dctx.fillStyle = BG
+      dctx.fillRect(0, 0, W, H)
+      dctx.fillStyle = DOT
+      for (let gx = 0; gx < cols; gx++)
+        for (let gy = 0; gy < rows; gy++) {
+          dctx.beginPath()
+          dctx.arc((gx + 0.5) * CELL, (gy + 0.5) * CELL, 0.85, 0, Math.PI * 2)
+          dctx.fill()
+        }
+
+      const t0 = performance.now()
+
+      function frame(now: number) {
+        const elapsed = now - t0
+
+        // ── Background (blit pre-drawn dots) ─────────────────────────────
+        ctx.drawImage(dotCanvas, 0, 0)
+
+        // ── Traces ───────────────────────────────────────────────────────
+        ctx.lineCap  = 'round'
+        ctx.lineJoin = 'round'
+
+        for (let i = 0; i < paths.length; i++) {
+          const pts = paths[i]
+          if (pts.length < 2) continue
+
+          const tNorm = Math.max(0, Math.min(1,
+            (elapsed - delays[i]) / durations[i],
+          ))
+          if (tNorm <= 0) continue
+
+          const drawn = lens[i] * tNorm
+          const gap   = lens[i] * 20   // effectively infinite gap
+
+          // ── Outer glow pass ───────────────────────────────────────────
+          ctx.save()
+          ctx.shadowColor  = GLOW_COL
+          ctx.shadowBlur   = 14
+          ctx.globalAlpha  = 0.6
+          ctx.strokeStyle  = COPPER
+          ctx.lineWidth    = 5
+          ctx.setLineDash([drawn, gap])
+          tracePath(ctx, pts)
+          ctx.restore()
+
+          // ── Core trace ────────────────────────────────────────────────
+          ctx.save()
+          ctx.shadowColor = GLOW_COL
+          ctx.shadowBlur  = 5
+          ctx.strokeStyle = '#e09040'
+          ctx.lineWidth   = 2.5
+          ctx.setLineDash([drawn, gap])
+          tracePath(ctx, pts)
+          ctx.restore()
+
+          // ── Bright highlight (thin, on top) ───────────────────────────
+          ctx.save()
+          ctx.globalAlpha = 0.35
+          ctx.strokeStyle = '#ffd090'
+          ctx.lineWidth   = 1
+          ctx.setLineDash([drawn, gap])
+          tracePath(ctx, pts)
+          ctx.restore()
+
+          // ── Via pad at terminus ───────────────────────────────────────
+          if (tNorm >= 1) {
+            const last = pts[pts.length - 1]
+            const vx = cpx(last.gx), vy = cpy(last.gy)
+            ctx.save()
+            ctx.shadowColor = '#ffcc55'
+            ctx.shadowBlur  = 14
+            // outer ring
+            ctx.fillStyle   = VIA_GOLD
             ctx.beginPath()
-            ctx.arc((gx + 0.5) * CELL, (gy + 0.5) * CELL, 0.9, 0, Math.PI * 2)
+            ctx.arc(vx, vy, 5.5, 0, Math.PI * 2)
             ctx.fill()
-          }
-
-        // ── Copper traces ─────────────────────────────────────────────────
-        for (const path of paths) {
-          const end = Math.min(upTo, path.length - 1)
-          if (end < 1) continue
-
-          ctx.strokeStyle = COPPER
-          ctx.lineWidth   = 3
-          ctx.lineCap     = 'square'
-          ctx.lineJoin    = 'miter'
-          ctx.beginPath()
-          ctx.moveTo((path[0].x + 0.5) * CELL, (path[0].y + 0.5) * CELL)
-          for (let i = 1; i <= end; i++)
-            ctx.lineTo((path[i].x + 0.5) * CELL, (path[i].y + 0.5) * CELL)
-          ctx.stroke()
-
-          // Dim "tail" segment while still growing (leading edge effect)
-          if (end < path.length - 1) {
-            const tip = path[end]
-            ctx.strokeStyle = COPPER_DIM
-            ctx.lineWidth   = 2
+            ctx.restore()
+            // centre hole
+            ctx.fillStyle = '#111'
             ctx.beginPath()
-            ctx.moveTo((path[end > 0 ? end - 1 : 0].x + 0.5) * CELL, (path[end > 0 ? end - 1 : 0].y + 0.5) * CELL)
-            ctx.lineTo((tip.x + 0.5) * CELL, (tip.y + 0.5) * CELL)
-            ctx.stroke()
-          }
-
-          // Via pad at terminus
-          if (end === path.length - 1 && path.length > 2) {
-            const last = path[end]
-            const cx   = (last.x + 0.5) * CELL
-            const cy   = (last.y + 0.5) * CELL
-            ctx.fillStyle   = VIA
-            ctx.strokeStyle = '#111'
-            ctx.lineWidth   = 1.5
-            ctx.beginPath()
-            ctx.arc(cx, cy, 4.5, 0, Math.PI * 2)
-            ctx.fill()
-            ctx.stroke()
-            // Hole
-            ctx.fillStyle = '#222'
-            ctx.beginPath()
-            ctx.arc(cx, cy, 1.5, 0, Math.PI * 2)
+            ctx.arc(vx, vy, 2.2, 0, Math.PI * 2)
             ctx.fill()
           }
         }
 
+        ctx.setLineDash([])   // reset after trace drawing
+
         // ── SMD pads ──────────────────────────────────────────────────────
-        ctx.fillStyle = PIN_COL
-        for (const p of pins) {
-          const px = (p.sx + 0.5) * CELL
-          const py = (p.sy + 0.5) * CELL
-          ctx.fillRect(px - 3.5, py - 3.5, 7, 7)
+        ctx.fillStyle = PAD_COL
+        for (const p of pads) {
+          const px2 = cpx(p.gx), py2 = cpy(p.gy)
+          const pw = p.horiz ? 7 : 4.5
+          const ph = p.horiz ? 4.5 : 7
+          // slight metallic gradient per pad
+          const g = ctx.createLinearGradient(px2 - pw, py2 - ph, px2 + pw, py2 + ph)
+          g.addColorStop(0, '#d8d8d8')
+          g.addColorStop(1, '#909090')
+          ctx.fillStyle = g
+          ctx.fillRect(px2 - pw / 2, py2 - ph / 2, pw, ph)
         }
 
         // ── CPU die ───────────────────────────────────────────────────────
-        const bx = cpuX * CELL
-        const by = cpuY * CELL
-        const bw = cpuW * CELL
-        const bh = cpuH * CELL
-
         // Drop shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.55)'
-        ctx.fillRect(bx + 6, by + 6, bw, bh)
+        ctx.fillStyle = 'rgba(0,0,0,0.75)'
+        ctx.fillRect(DX + 10, DY + 10, DW, DH)
 
-        // Body
-        ctx.fillStyle   = CPU_FILL
-        ctx.fillRect(bx, by, bw, bh)
+        // Body gradient
+        const bg = ctx.createLinearGradient(DX, DY, DX + DW, DY + DH)
+        bg.addColorStop(0,    '#1c1c1c')
+        bg.addColorStop(0.35, '#141414')
+        bg.addColorStop(1,    '#080808')
+        ctx.fillStyle = bg
+        ctx.fillRect(DX, DY, DW, DH)
 
-        // Subtle inner gradient overlay
-        const grad = ctx.createLinearGradient(bx, by, bx + bw, by + bh)
-        grad.addColorStop(0,   'rgba(255,255,255,0.04)')
-        grad.addColorStop(1,   'rgba(0,0,0,0)')
-        ctx.fillStyle = grad
-        ctx.fillRect(bx, by, bw, bh)
-
-        // Border
-        ctx.strokeStyle = CPU_BORDER
+        // Chamfered-corner highlight (top-left edge bright, bottom-right dark)
+        ctx.strokeStyle = 'rgba(255,255,255,0.09)'
         ctx.lineWidth   = 1.5
-        ctx.strokeRect(bx, by, bw, bh)
-
-        // Pin-1 indicator dot (top-left)
-        ctx.fillStyle = '#444'
         ctx.beginPath()
-        ctx.arc(bx + 9, by + 9, 3, 0, Math.PI * 2)
+        ctx.moveTo(DX + 1, DY + DH - 1)
+        ctx.lineTo(DX + 1, DY + 1)
+        ctx.lineTo(DX + DW - 1, DY + 1)
+        ctx.stroke()
+
+        ctx.strokeStyle = 'rgba(0,0,0,0.6)'
+        ctx.beginPath()
+        ctx.moveTo(DX + DW - 1, DY + 1)
+        ctx.lineTo(DX + DW - 1, DY + DH - 1)
+        ctx.lineTo(DX + 1, DY + DH - 1)
+        ctx.stroke()
+
+        // Outer border
+        ctx.strokeStyle = 'rgba(255,255,255,0.14)'
+        ctx.lineWidth   = 1.5
+        ctx.strokeRect(DX, DY, DW, DH)
+
+        // Inset die area
+        const ins = 14
+        ctx.fillStyle = 'rgba(0,0,0,0.35)'
+        ctx.fillRect(DX + ins, DY + ins, DW - ins * 2, DH - ins * 2)
+
+        // Inner circuit grid (very faint)
+        ctx.save()
+        ctx.strokeStyle = 'rgba(255,255,255,0.018)'
+        ctx.lineWidth   = 0.5
+        ctx.setLineDash([2, 5])
+        const gs = 22
+        for (let x = DX + ins + gs; x < DX + DW - ins; x += gs) {
+          ctx.beginPath(); ctx.moveTo(x, DY + ins); ctx.lineTo(x, DY + DH - ins); ctx.stroke()
+        }
+        for (let y = DY + ins + gs; y < DY + DH - ins; y += gs) {
+          ctx.beginPath(); ctx.moveTo(DX + ins, y); ctx.lineTo(DX + DW - ins, y); ctx.stroke()
+        }
+        ctx.restore()
+
+        // Pin-1 dot (top-left)
+        ctx.fillStyle = 'rgba(255,255,255,0.4)'
+        ctx.beginPath()
+        ctx.arc(DX + 16, DY + 16, 4, 0, Math.PI * 2)
         ctx.fill()
 
-        // IC text label (very faint — doesn't compete with the overlay content)
-        const labelSize = Math.max(9, Math.floor(bw / 12))
-        ctx.fillStyle       = 'rgba(80,80,80,0.6)'
-        ctx.font            = `bold ${labelSize}px monospace`
+        // Die label (bottom, very subtle)
+        const fs = Math.max(9, Math.min(13, DW / 22))
+        ctx.save()
+        ctx.globalAlpha     = 0.09
+        ctx.fillStyle       = '#ffffff'
+        ctx.font            = `600 ${fs}px 'Courier New', monospace`
         ctx.textAlign       = 'center'
-        ctx.textBaseline    = 'bottom'
-        ctx.fillText('RL-CPU', bx + bw / 2, by + bh - 10)
-      }
+        ctx.textBaseline    = 'middle'
+        ctx.fillText('RL · AI PROCESSOR', DX + DW / 2, DY + DH - 20)
+        ctx.restore()
 
-      // ── Animation loop ───────────────────────────────────────────────────
-      function tick() {
-        drawFrame(step)
-        step += SPEED
-        if (step <= maxLen + 4) {
-          raf = requestAnimationFrame(tick)
+        // ── Vignette (darken edges, draw attention to centre) ─────────────
+        const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.15, W / 2, H / 2, H * 0.85)
+        vig.addColorStop(0, 'rgba(0,0,0,0)')
+        vig.addColorStop(1, 'rgba(0,0,0,0.45)')
+        ctx.fillStyle = vig
+        ctx.fillRect(0, 0, W, H)
+
+        // Keep looping until animation finishes, then paint one final frame
+        if (elapsed < finishTime) {
+          raf = requestAnimationFrame(frame)
         }
-        // After animation ends the final static frame stays painted
       }
 
-      raf = requestAnimationFrame(tick)
+      raf = requestAnimationFrame(frame)
     }
 
     init()
@@ -292,12 +384,11 @@ export default function CircuitBoard() {
 
   return (
     <canvas
-      ref={canvasRef}
+      ref={ref}
       aria-hidden="true"
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
+        top: 0, left: 0,
         width: '100%',
         height: '100%',
         display: 'block',

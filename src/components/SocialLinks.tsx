@@ -1,5 +1,10 @@
 'use client'
 
+import { useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const ProfileModal = dynamic(() => import('./ProfileModal'), { ssr: false })
+
 // ── SVG Icons ─────────────────────────────────────────────────────────────────
 
 function GitHubIcon({ className = 'h-5 w-5' }: { className?: string }) {
@@ -72,20 +77,24 @@ function StyleOnce() {
   return <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 }
 
+const GITHUB_URL   = 'https://github.com/ARobLar'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/robin-larsson-29b593137/'
+
 // ── Hero / full-size buttons ──────────────────────────────────────────────────
 export function SocialLinks() {
+  const [modal, setModal] = useState<'github' | 'linkedin' | null>(null)
+
   return (
     <>
       <StyleOnce />
       <div className="flex flex-wrap justify-center gap-4">
         {/* GitHub */}
-        <a
-          href="https://github.com/ARobLar"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => setModal('github')}
           className="gh-btn group relative inline-flex items-center gap-3 overflow-hidden rounded-xl px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
           style={{ background: '#24292f' }}
-          aria-label="Visit Robin's GitHub"
+          aria-label="View Robin's GitHub profile"
         >
           {/* Shimmer sweep */}
           <span
@@ -102,16 +111,15 @@ export function SocialLinks() {
             <GitHubIcon className="h-5 w-5" />
           </span>
           <span className="relative z-10">GitHub</span>
-        </a>
+        </button>
 
         {/* LinkedIn */}
-        <a
-          href="https://www.linkedin.com/in/robin-larsson-29b593137/"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => setModal('linkedin')}
           className="li-btn group relative inline-flex items-center gap-3 overflow-hidden rounded-xl px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
           style={{ background: '#0077b5' }}
-          aria-label="Visit Robin's LinkedIn"
+          aria-label="View Robin's LinkedIn profile"
         >
           <span
             aria-hidden="true"
@@ -127,14 +135,23 @@ export function SocialLinks() {
             <LinkedInIcon className="h-5 w-5" />
           </span>
           <span className="relative z-10">LinkedIn</span>
-        </a>
+        </button>
       </div>
+
+      {modal && (
+        <ProfileModal
+          platform={modal}
+          url={modal === 'github' ? GITHUB_URL : LINKEDIN_URL}
+          onClose={() => setModal(null)}
+        />
+      )}
     </>
   )
 }
 
 // ── Navbar / icon-only buttons ────────────────────────────────────────────────
 export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
+  const [modal, setModal] = useState<'github' | 'linkedin' | null>(null)
   const ring = scrolled ? 'ring-slate-200' : 'ring-white/20'
   const bg   = scrolled ? 'bg-slate-50 hover:bg-slate-100 text-slate-700' : 'bg-white/10 hover:bg-white/20 text-white'
 
@@ -142,10 +159,9 @@ export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
     <>
       <StyleOnce />
       <div className="flex items-center gap-2">
-        <a
-          href="https://github.com/ARobLar"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => setModal('github')}
           className={`gh-icon-btn flex h-9 w-9 items-center justify-center rounded-lg ring-1 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${bg} ${ring}`}
           aria-label="GitHub"
           title="GitHub"
@@ -153,11 +169,10 @@ export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
           <span className="gh-icon-sm flex items-center">
             <GitHubIcon className="h-4 w-4" />
           </span>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/robin-larsson-29b593137/"
-          target="_blank"
-          rel="noopener noreferrer"
+        </button>
+        <button
+          type="button"
+          onClick={() => setModal('linkedin')}
           className={`li-icon-btn flex h-9 w-9 items-center justify-center rounded-lg ring-1 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${bg} ${ring}`}
           aria-label="LinkedIn"
           title="LinkedIn"
@@ -165,8 +180,16 @@ export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
           <span className="li-icon-sm flex items-center">
             <LinkedInIcon className="h-4 w-4" />
           </span>
-        </a>
+        </button>
       </div>
+
+      {modal && (
+        <ProfileModal
+          platform={modal}
+          url={modal === 'github' ? GITHUB_URL : LINKEDIN_URL}
+          onClose={() => setModal(null)}
+        />
+      )}
     </>
   )
 }

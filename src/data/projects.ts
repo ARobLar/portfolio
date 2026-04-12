@@ -357,7 +357,7 @@ This international experience not only broadened Robin's technical foundations b
   },
   {
     slug: 'malardalen-civil-engineering',
-    title: 'Civil Engineer in Robotics — Three Master\'s Theses',
+    title: 'BSc+MSc in Robotics — Three Master\'s Theses',
     client: 'Mälardalen University',
     period: 'Aug 2014 – Jun 2020',
     startYear: 2014,
