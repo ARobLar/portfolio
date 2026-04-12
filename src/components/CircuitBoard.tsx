@@ -130,8 +130,13 @@ export default function CircuitBoard() {
       if (!canvas) return
       cancelAnimationFrame(raf)
 
-      canvas.width  = parent.offsetWidth
-      canvas.height = parent.offsetHeight
+      const W0 = parent.offsetWidth
+      const H0 = parent.offsetHeight
+      // Guard: if layout hasn't painted yet, dimensions will be 0 — skip
+      if (!W0 || !H0) return
+
+      canvas.width  = W0
+      canvas.height = H0
 
       const W = canvas.width
       const H = canvas.height
@@ -140,11 +145,9 @@ export default function CircuitBoard() {
       const cols = Math.floor(W / CELL)
       const rows = Math.floor(H / CELL)
 
-      // ── CPU size: wide + tall enough to frame all hero text ───────────────
-      // Target: cover the max-w-3xl text block (~720px wide, ~380px tall)
-      // plus generous margin so it reads as "the CPU holds the content".
-      const cpuPxW = Math.max(Math.min(W * 0.80, 860), Math.min(W - 40, 720))
-      const cpuPxH = Math.max(Math.min(H * 0.78, 520), Math.min(H - 60, 400))
+      // ── CPU size: 30% larger than original to fill more of the hero ─────
+      const cpuPxW = Math.max(Math.min(W * 0.88, 1118), Math.min(W - 20, 936))
+      const cpuPxH = Math.max(Math.min(H * 0.88, 676),  Math.min(H - 30, 520))
       const cgw    = Math.max(10, Math.floor(cpuPxW / CELL))
       const cgh    = Math.max(10, Math.floor(cpuPxH / CELL))
       const cgx    = Math.floor((cols - cgw) / 2)
@@ -218,36 +221,43 @@ export default function CircuitBoard() {
           ))
           if (tNorm <= 0) continue
 
-          const drawn = lens[i] * tNorm
-          const gap   = lens[i] * 20   // effectively infinite gap
+          // Progressive reveal via lineDashOffset:
+          //   dash = full path length, gap = full path length (so pattern = [len, len])
+          //   offset starts at `len` (fully hidden) and decreases to 0 (fully visible)
+          // This approach works reliably in all browsers including WebKit/Blink on static exports.
+          const len    = lens[i]
+          const offset = len * (1 - tNorm)
 
           // ── Outer glow pass ───────────────────────────────────────────
           ctx.save()
-          ctx.shadowColor  = GLOW_COL
-          ctx.shadowBlur   = 14
-          ctx.globalAlpha  = 0.6
-          ctx.strokeStyle  = COPPER
-          ctx.lineWidth    = 5
-          ctx.setLineDash([drawn, gap])
+          ctx.shadowColor    = GLOW_COL
+          ctx.shadowBlur     = 14
+          ctx.globalAlpha    = 0.6
+          ctx.strokeStyle    = COPPER
+          ctx.lineWidth      = 5
+          ctx.setLineDash([len, len])
+          ctx.lineDashOffset = offset
           tracePath(ctx, pts)
           ctx.restore()
 
           // ── Core trace ────────────────────────────────────────────────
           ctx.save()
-          ctx.shadowColor = GLOW_COL
-          ctx.shadowBlur  = 5
-          ctx.strokeStyle = '#e09040'
-          ctx.lineWidth   = 2.5
-          ctx.setLineDash([drawn, gap])
+          ctx.shadowColor    = GLOW_COL
+          ctx.shadowBlur     = 5
+          ctx.strokeStyle    = '#e09040'
+          ctx.lineWidth      = 2.5
+          ctx.setLineDash([len, len])
+          ctx.lineDashOffset = offset
           tracePath(ctx, pts)
           ctx.restore()
 
           // ── Bright highlight (thin, on top) ───────────────────────────
           ctx.save()
-          ctx.globalAlpha = 0.35
-          ctx.strokeStyle = '#ffd090'
-          ctx.lineWidth   = 1
-          ctx.setLineDash([drawn, gap])
+          ctx.globalAlpha    = 0.35
+          ctx.strokeStyle    = '#ffd090'
+          ctx.lineWidth      = 1
+          ctx.setLineDash([len, len])
+          ctx.lineDashOffset = offset
           tracePath(ctx, pts)
           ctx.restore()
 
@@ -374,10 +384,14 @@ export default function CircuitBoard() {
       raf = requestAnimationFrame(frame)
     }
 
-    init()
-    window.addEventListener('resize', init)
+    // ResizeObserver fires on initial layout AND on every resize — more reliable
+    // than window 'resize' for a static export where the first paint may arrive
+    // after useEffect runs and the canvas has zero dimensions.
+    const ro = new ResizeObserver(() => init())
+    ro.observe(parent)
+
     return () => {
-      window.removeEventListener('resize', init)
+      ro.disconnect()
       cancelAnimationFrame(raf)
     }
   }, [])

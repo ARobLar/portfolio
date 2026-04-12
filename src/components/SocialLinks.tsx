@@ -82,7 +82,7 @@ const LINKEDIN_URL = 'https://www.linkedin.com/in/robin-larsson-29b593137/'
 
 // ── Hero / full-size buttons ──────────────────────────────────────────────────
 export function SocialLinks() {
-  const [modal, setModal] = useState<'github' | 'linkedin' | null>(null)
+  const [modal, setModal] = useState<'github' | null>(null)
 
   return (
     <>
@@ -113,10 +113,11 @@ export function SocialLinks() {
           <span className="relative z-10">GitHub</span>
         </button>
 
-        {/* LinkedIn */}
-        <button
-          type="button"
-          onClick={() => setModal('linkedin')}
+        {/* LinkedIn — opens in new tab */}
+        <a
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className="li-btn group relative inline-flex items-center gap-3 overflow-hidden rounded-xl px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
           style={{ background: '#0077b5' }}
           aria-label="View Robin's LinkedIn profile"
@@ -135,13 +136,13 @@ export function SocialLinks() {
             <LinkedInIcon className="h-5 w-5" />
           </span>
           <span className="relative z-10">LinkedIn</span>
-        </button>
+        </a>
       </div>
 
       {modal && (
         <ProfileModal
           platform={modal}
-          url={modal === 'github' ? GITHUB_URL : LINKEDIN_URL}
+          url={GITHUB_URL}
           onClose={() => setModal(null)}
         />
       )}
@@ -151,7 +152,7 @@ export function SocialLinks() {
 
 // ── Navbar / icon-only buttons ────────────────────────────────────────────────
 export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
-  const [modal, setModal] = useState<'github' | 'linkedin' | null>(null)
+  const [modal, setModal] = useState<'github' | null>(null)
   const ring = scrolled ? 'ring-slate-200' : 'ring-white/20'
   const bg   = scrolled ? 'bg-slate-50 hover:bg-slate-100 text-slate-700' : 'bg-white/10 hover:bg-white/20 text-white'
 
@@ -170,9 +171,10 @@ export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
             <GitHubIcon className="h-4 w-4" />
           </span>
         </button>
-        <button
-          type="button"
-          onClick={() => setModal('linkedin')}
+        <a
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className={`li-icon-btn flex h-9 w-9 items-center justify-center rounded-lg ring-1 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${bg} ${ring}`}
           aria-label="LinkedIn"
           title="LinkedIn"
@@ -180,13 +182,13 @@ export function SocialIconLinks({ scrolled }: { scrolled: boolean }) {
           <span className="li-icon-sm flex items-center">
             <LinkedInIcon className="h-4 w-4" />
           </span>
-        </button>
+        </a>
       </div>
 
       {modal && (
         <ProfileModal
           platform={modal}
-          url={modal === 'github' ? GITHUB_URL : LINKEDIN_URL}
+          url={GITHUB_URL}
           onClose={() => setModal(null)}
         />
       )}

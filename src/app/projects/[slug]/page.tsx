@@ -1,6 +1,16 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { getProjectBySlug, getAdjacentProjects, projects } from '@/data/projects'
+
+/** Render inline **bold** markdown as <strong> elements. */
+function renderInline(text: string): ReactNode {
+  const parts = text.split(/\*\*(.+?)\*\*/g)
+  if (parts.length === 1) return text
+  return parts.map((part, i) =>
+    i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
+  )
+}
 
 interface Props {
   params: { slug: string }
@@ -111,28 +121,19 @@ export default function ProjectPage({ params }: Props) {
         {/* Body */}
         <div className="prose">
           {bodyParagraphs.map((para, i) => {
-            // Detect bold headers like **As Tech Lead**
-            const boldMatch = para.match(/^\*\*(.+?)\*\*,?\s*(.*)/s)
-            if (boldMatch) {
-              return (
-                <p key={i}>
-                  <strong>{boldMatch[1]}</strong>
-                  {boldMatch[2] ? ` ${boldMatch[2]}` : ''}
-                </p>
-              )
-            }
-            // Detect bullet lists
+            // Detect bullet lists (process inline bold inside each item)
             if (para.startsWith('- ')) {
               const items = para.split('\n').filter((l) => l.startsWith('- '))
               return (
                 <ul key={i}>
                   {items.map((item, j) => (
-                    <li key={j}>{item.replace(/^- /, '')}</li>
+                    <li key={j}>{renderInline(item.replace(/^- /, ''))}</li>
                   ))}
                 </ul>
               )
             }
-            return <p key={i}>{para}</p>
+            // All other paragraphs: render inline bold throughout
+            return <p key={i}>{renderInline(para)}</p>
           })}
         </div>
 

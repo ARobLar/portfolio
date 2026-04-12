@@ -85,7 +85,7 @@ Key outcomes included:
 **As Full Stack Developer**, Robin implemented the PoC platform (full-stack) and cold-email automation (dynamic templates, A/B, follow-up). He maintained and developed the website (performance, content, SEO) and built prototypes for gamified advertisements.
     `,
     roles: ['CTO & Co-Founder', 'Product Owner', 'Business Developer', 'Tech Lead', 'Architect', 'Full Stack Developer'],
-    keywords: ['Generative AI', 'Lean Startup', 'Product Strategy', 'A/B Testing', 'Architecture', 'TypeScript', 'Next.js', 'AI Integration'],
+    keywords: ['Generative AI', 'Lean Startup', 'Product Strategy', 'A/B Testing', 'Architecture', 'TypeScript', 'Next.js', 'React', 'AI Integration'],
     image: '/images/retail.jpg',
     featured: true,
   },
@@ -114,7 +114,7 @@ Delivered a working MVP where users can browse listed companies, sell, place bid
 **As Full Stack Developer**, Robin was responsible for backend development, API design and database modeling (including transaction and logic layers), real-time communication, and automated email handling upon deal completion. He also contributed to frontend and UX design to ensure a cohesive user experience from listing to transaction. He automated contract generation, email dispatch, and invoice creation.
     `,
     roles: ['Tech Lead', 'Solution Architect', 'Full Stack Developer'],
-    keywords: ['.NET Core', 'Next.js', 'TypeScript', 'PostgreSQL', 'Docker', 'BankID', 'Real-time', 'E-signature', 'Fintech', 'RBAC'],
+    keywords: ['.NET Core', 'Next.js', 'React', 'TypeScript', 'PostgreSQL', 'Docker', 'BankID', 'Real-time', 'E-signature', 'Fintech', 'RBAC'],
     image: '/images/fintech.jpg',
   },
   {
@@ -148,7 +148,7 @@ Key outcomes:
 **As Full Stack Developer**, Robin implemented web scraping, data validation and normalization, API layer and dashboards. He was responsible for all UI/UX work for the platform: information architecture, component library, and interaction design, as well as user testing and iteration with the client.
     `,
     roles: ['Requirements Analyst', 'Tech Lead', 'Solution Architect', 'Full Stack Developer'],
-    keywords: ['Next.js', '.NET Core', 'TypeScript', 'SQL Server', 'Azure', 'Docker', 'CI/CD', 'Web Scraping', 'Data Engineering', 'E-commerce'],
+    keywords: ['Next.js', 'React', '.NET Core', 'TypeScript', 'SQL Server', 'Azure', 'Docker', 'CI/CD', 'Web Scraping', 'Data Engineering', 'E-commerce'],
     image: '/images/ecommerce.jpg',
   },
   {
@@ -180,7 +180,7 @@ Key deliverables:
 **As Full Stack Developer**, Robin was responsible for database schema, backend, APIs, admin panel, and delivery to client. He integrated video streaming and built analytics logic to track user interactions and engagement. He ensured performance and security at a global scale.
     `,
     roles: ['Tech Lead', 'Solution Architect', 'Full Stack Developer'],
-    keywords: ['Node.js', 'TypeScript', 'Next.js', 'Azure', 'CMS', 'Generative AI', 'Video Streaming', 'Docker', 'RBAC', 'EdTech'],
+    keywords: ['Node.js', 'TypeScript', 'Next.js', 'React', 'Azure', 'CMS', 'Generative AI', 'Video Streaming', 'Docker', 'RBAC', 'EdTech'],
     image: '/images/edtech.jpg',
   },
   {
@@ -209,7 +209,7 @@ Key outcomes:
 **As Data Engineer**, Robin developed ETL flows from database models to visualization of key metrics in the B2B admin panel. Focus was on modular design and scalability to facilitate future expansion of data visualization, reporting, and segmentation of user data.
     `,
     roles: ['Full Stack Developer', 'Data Engineer'],
-    keywords: ['.NET Core', 'TypeScript', 'Azure', 'SQL Server', 'Docker', 'QR Codes', 'ETL', 'Data Visualization', 'B2B2C', 'Events'],
+    keywords: ['Next.js', 'React', 'TypeScript', '.NET Core', 'Azure', 'SQL Server', 'Docker', 'QR Codes', 'ETL', 'Data Visualization', 'B2B2C', 'Events'],
     image: '/images/events.jpg',
   },
   {
@@ -453,7 +453,7 @@ Ubit is a digital startup consultancy helping non-technical founders turn ideas 
 Robin operated as sole technical owner on each engagement — from first conversation with the founder to production deployment.
     `,
     roles: ['Tech Lead', 'Solution Architect', 'Full Stack Developer'],
-    keywords: ['LEAN Startup', 'MVP Development', 'Product Strategy', 'Full Stack', 'Growth Hacking', 'SEO', 'Architecture', 'Startup Consulting'],
+    keywords: ['Next.js', 'React', 'TypeScript', '.NET Core', 'LEAN Startup', 'MVP Development', 'Product Strategy', 'Full Stack', 'Growth Hacking', 'SEO', 'Architecture', 'Startup Consulting'],
     image: '/images/consulting.jpg',
   },
   {

@@ -85,8 +85,12 @@ export default function Timeline() {
   const chartRef = useRef<HTMLDivElement>(null)
 
   const { laned, minYear, maxYear, totalSpan, laneCount, yearMarkers } = useMemo(() => {
+    // 'ubit-consulting' is an umbrella entry — its individual engagements are
+    // already shown as separate bars, so exclude it to avoid a redundant overlay.
+    const TIMELINE_EXCLUDE = new Set(['ubit-consulting'])
+
     const raw: LanedProject[] = projects
-      .filter((p) => p.dateStart && p.dateEnd !== undefined)
+      .filter((p) => p.dateStart && p.dateEnd !== undefined && !TIMELINE_EXCLUDE.has(p.slug))
       .map((p) => ({
         project: p,
         lane: 0,
@@ -179,9 +183,9 @@ export default function Timeline() {
             const itemTop = HEADER_H + lane * (LANE_H + LANE_GAP)
             const color   = getColor(project)
 
-            // Primary label: first role (most senior title)
-            const roleLabel  = project.roles[0] ?? project.title.split(' — ')[0]
-            const clientLabel = shortClient(project)
+            // Bar label: project title; sub-label: employer company (drives colour)
+            const roleLabel   = project.title.split(' — ')[0]
+            const clientLabel = getCompany(project)
 
             return (
               <Link
