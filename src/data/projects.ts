@@ -421,6 +421,176 @@ The MSc directly informs his current specialisation in agentic AI, LLM integrati
     featured: true,
   },
   {
+    slug: 'investment-club',
+    title: 'University Investment Club — Lead Analyst',
+    client: 'Jönköping University',
+    period: 'Aug 2021 – Jun 2022',
+    startYear: 2021,
+    dateStart: [2021, 8],
+    dateEnd: [2022, 6],
+    category: 'academic',
+    summary:
+      'Led the analytical work for a university investment club during the MSc AI programme. The mandate: identify high-return equity investments while keeping risk mitigated. Produced two full research cycles — AMD and Yamana Gold — each covering fundamental, financial, and technical analysis culminating in a formal investment recommendation.',
+    fullDescription: `
+University Investment Club, Jönköping University — MSc AI Programme (2021–2022)
+
+As part of extracurricular activities alongside the MSc in Artificial Intelligence at Jönköping University, Robin led the analytical work for a university investment club. The mandate was to identify high-return equity opportunities while maintaining a disciplined, risk-mitigated approach to portfolio construction.
+
+**Structure and Methodology**
+
+The club operated as a team of four analysts. Each investment cycle followed a structured, professional-grade research framework:
+
+1. **Company Profiling** — product range, business segments, geographic markets, management, and shareholder structure
+2. **Market Analysis** — TAM, CAGR projections, market share dynamics, and macroeconomic external factors
+3. **Company Analysis** — competitive positioning, competitive advantages, company outlook, and key risks
+4. **Financial Analysis** — revenue growth trends, key financial ratios (P/E, EV/EBITDA, EV/Sales, ROE, ROI, D/E), and a Comparable Company Analysis (comps) against industry peers
+5. **Technical Analysis** — price action, moving averages (50/100/200 SMA), RSI, MACD, trend patterns, and technical price targets
+6. **Investment Thesis & Recommendation** — a synthesised buy/hold/sell recommendation with a target price and investment horizon
+
+Each full cycle produced a written research report and a formal presentation delivered to the group.
+
+**Analyses Completed**
+
+**AMD (Advanced Micro Devices), Q4 2021** — Semiconductor sector. BUY recommendation based on growing CPU/GPU market share, an exceptionally clean balance sheet (D/E ratio of 0.04), strong CEO leadership under Lisa Su (+1,300% share price since 2014), and structural demand tailwinds from gaming, HPC, autonomous vehicles, and data centres. Technical price target: 200 USD.
+
+**Yamana Gold, Q1 2022** — Precious metals sector. BUY recommendation based on the inflation hedge thesis, Americas-only mine portfolio with no Russia exposure (competitors with Russian operations were facing forced shutdowns due to Ukraine war sanctions), undervaluation relative to peers, and a confirmed technical uptrend above both the 50 and 200 SMA. Timed to align with the macro environment of surging inflation and geopolitical uncertainty.
+
+**Role as Lead Analyst**
+
+Robin coordinated the team's research workstreams, defined the analytical framework for each cycle, synthesised findings into the final reports, and led the investment presentations. The investment club sharpened skills in fundamental analysis, financial modelling, macro-to-micro research methodology, and communicating complex financial arguments — skills that directly complement work in technical architecture and data-driven product strategy.
+    `,
+    roles: ['Lead Analyst', 'Investment Strategist', 'Financial Analyst'],
+    keywords: ['Equity Research', 'Fundamental Analysis', 'Financial Modelling', 'Technical Analysis', 'Comparable Company Analysis', 'Risk Management', 'Portfolio Strategy', 'Investment Thesis'],
+    image: '/images/finance.jpg',
+  },
+  {
+    slug: 'investment-amd',
+    title: 'AMD — Equity Research & Investment Analysis',
+    client: 'Investment Club, Jönköping University',
+    period: 'Q4 2021',
+    startYear: 2021,
+    dateStart: [2021, 11],
+    dateEnd: [2021, 12],
+    category: 'hobby',
+    summary:
+      'Full equity research report on Advanced Micro Devices (AMD) produced for the university investment club. Covered company profile, market dynamics, competitor mapping, financial ratios, comparable company valuation, and technical analysis — culminating in a BUY recommendation.',
+    fullDescription: `
+**Team:** Robin Larsson (Lead Analyst), Rasmus Bogren, Lennart Erdmann, Valeria Vitale
+
+AMD was selected as the first investment candidate of the university investment club cycle. The team produced a full equity research report and formal presentation.
+
+**Company Overview**
+
+AMD is a US-based semiconductor company (founded 1969) specialising in CPUs and GPUs for PCs, gaming consoles, cloud computing, and high-performance computing (HPC). At time of analysis, revenue was split across two segments: Computing & Graphics (56%) and Enterprise, Embedded & Semicustom (44%), with Q3 2021 combined revenue of ~$4.3B.
+
+**Market Analysis**
+
+- GPU market projected to grow at 33% CAGR to 2027; CPU market at 4.1% CAGR to 2027
+- AMD held 38% CPU market share (vs. Intel 62%) and 19% discrete GPU share (vs. Nvidia 81%)
+- Semiconductor shortage (2020–) created a supply constraint that also raised the barrier to entry for new competitors — net positive for incumbents
+- Key demand tailwinds: crypto mining, autonomous vehicles, gaming, Metaverse, and data centres
+
+**Company Analysis**
+
+- CEO Dr. Lisa Su (since 2014): share price +1,300% under her leadership; named one of Barron's Top 50 CEOs
+- Major institutional holders: Vanguard (7.68%), BlackRock (4.48%), SSgA (3.74%)
+- Exclusive CPU/GPU supplier for both Sony PlayStation 5 and Microsoft Xbox Series X/S — long-term, locked-in console revenue
+- Described as selling "shovels in the gold rush": regardless of which high-tech trend wins, they all require AMD's computing power
+
+**Financial Analysis**
+
+- Revenue grew 45% YoY from 2019 to 2020; steady growth trajectory with reinvestment focus (no dividends paid)
+- Debt/Equity ratio of 0.04 — the lowest in the peer group; significant headroom for future acquisitions or R&D spending
+- Strong ROE and ROI relative to peers, demonstrating efficient capital deployment despite lower absolute earnings margins
+- Comparable company analysis vs. Nvidia, Qualcomm, Intel, and ADI: AMD appeared **fairly valued to undervalued** at current price relative to peers
+
+**Technical Analysis**
+
+- Strong uptrend with price trading above both the 50 and 100 SMA
+- RSI normalising from overbought territory — classic bull consolidation setup after an Omicron-driven pullback
+- MACD showing a slight bearish crossover post run-up (considered a short-term signal, not a trend reversal)
+- Prior breakout from a pennant formation added ~50 USD to price
+- Technical price target: **200 USD** if a new pennant forms and breaks to the upside
+- AMD outperformed the S&P 500 by ~40% year-to-date at time of analysis
+
+**Conclusion: BUY**
+
+AMD is well positioned to capitalise on structural semiconductor demand growth. A capable CEO, the lowest debt levels in the peer group, growing market share in both CPUs and GPUs, strong institutional ownership, and an attractive relative valuation made AMD a high-conviction long-term buy recommendation.
+    `,
+    roles: ['Lead Analyst', 'Financial Analyst'],
+    keywords: ['Equity Research', 'Semiconductors', 'Fundamental Analysis', 'Technical Analysis', 'Comparable Company Analysis', 'Financial Ratios', 'Investment Thesis', 'Buy Recommendation'],
+    image: '/images/finance.jpg',
+  },
+  {
+    slug: 'investment-yamana',
+    title: 'Yamana Gold — Equity Research & Investment Analysis',
+    client: 'Investment Club, Jönköping University',
+    period: 'Q1 2022',
+    startYear: 2022,
+    dateStart: [2022, 2],
+    dateEnd: [2022, 3],
+    category: 'hobby',
+    summary:
+      'Full equity research report on Yamana Gold Inc produced for the university investment club during a period of surging inflation and the Russia-Ukraine war. Covered gold market dynamics, mine portfolio analysis, financial ratios, comparable company valuation, and technical analysis — culminating in a BUY recommendation.',
+    fullDescription: `
+**Team:** Robin Larsson (Lead Analyst), Rasmus Bogren, Valeria Vitale
+
+Yamana Gold was the second investment candidate of the university investment club cycle. The analysis was produced during Q1 2022 — a period of surging global inflation and the outbreak of the Russia-Ukraine war — both highly relevant to the precious metals investment thesis.
+
+**Company Overview**
+
+Yamana Gold is a Canadian-based precious metals producer (founded 1994) mining gold (88% of production) and silver (12%) across five long-life, fully or majority-owned mines in the Americas. Listed on the Toronto Stock Exchange, New York Stock Exchange, and London Stock Exchange with ~5,000 employees.
+
+**Mine Portfolio**
+
+- **Canadian Malartic** (Quebec): Largest gold mine in Canada; 50% owned; 1.77M oz reserves; mine life until 2039
+- **Cerro Moro** (Argentina): Gold + silver; 457K oz gold and 22.2M oz silver reserves; 5–10 year life
+- **El Penon** (Chile): Gold + silver; 6–8 year life, extendable with further exploration
+- **Jacobina** (Brazil): Located on one of the world's largest gold reserves; 2.94M oz probable reserves; production doubled since 2014
+- **Minera Florida** (Chile): 30+ years in operation; long-term production expansion underway
+
+**Market Analysis**
+
+- Global gold mining market projected to grow from $214.1B (2021) to $249.6B by 2026 at 3.1% CAGR
+- Key demand drivers: inflation hedging, investment ETFs, rising jewellery demand in Asia
+- At time of analysis: inflation surging globally, Russia-Ukraine war driving energy prices and market uncertainty — both directly favourable for gold and silver prices
+- Deflationary risk: rising interest rates could suppress gold prices if inflation is brought under control quickly
+
+**Company Analysis**
+
+- Management holds significant personal stakes (CEO: 572K shares; Executive Chairman: 2.77M shares) — strong shareholder alignment
+- No operations in Russia or Ukraine — competitors with Russian mines faced forced shutdowns and sanctions risk
+- Recognised for sustainability practices — strategic advantage for new mine permitting with governments and local communities
+- Largest institutional holder: VanEck (10.6%) — the world's leading gold ETF provider; strong sector-specialist backing
+
+**Financial Analysis**
+
+- Revenue stable over the past decade with 17% YoY growth at time of analysis; revenue closely tracks gold price movements
+- Average production cost ~900 USD/oz; gold price significantly above this level, yielding healthy margins
+- Low debt/equity ratio; small dividend paid to shareholders while retaining most profits for reinvestment
+- Comparable company analysis vs. Newmont, Barrick, Kinross, and Agnico Eagle: Yamana near the **25th percentile of EV/Revenue** — trading below peers, suggesting undervaluation relative to similar operators
+
+**Technical Analysis**
+
+- Trading above both the 50 and 200 SMA — confirmed long-term uptrend
+- Strong momentum; outperformed the S&P 500 over the preceding 6 months
+- Technical setup supported continued upside in line with the macro thesis
+
+**Key Risks Assessed**
+
+- Gold/silver price sensitivity — margins directly tied to commodity prices, which can reverse quickly
+- Acquisition risk — as a smaller producer, potential takeover target (short-term price upside but loss of long-term holding)
+- Mine lifetime — all mines have finite reserves, though current lifetimes range from 5 to 40+ years with extension potential
+
+**Conclusion: BUY**
+
+Yamana Gold offered a well-timed inflation hedge with an operationally robust, Americas-only portfolio. The combination of a rising gold price environment, no geopolitical exposure to Russia, solid balance sheet, Americas-focused ESG-recognised operations, and undervaluation relative to peers made Yamana a compelling buy recommendation for the portfolio.
+    `,
+    roles: ['Lead Analyst', 'Financial Analyst'],
+    keywords: ['Equity Research', 'Precious Metals', 'Gold Mining', 'Fundamental Analysis', 'Technical Analysis', 'Comparable Company Analysis', 'Inflation Hedge', 'Buy Recommendation'],
+    image: '/images/finance.jpg',
+  },
+  {
     slug: 'ubit-consulting',
     title: 'Ubit — Digital Startup Consulting',
     client: 'Ubit',
