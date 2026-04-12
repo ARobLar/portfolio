@@ -303,6 +303,85 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     featured: true,
   },
   {
+    slug: 'scooteroni',
+    title: 'Scooteroni — 3D Multiplayer Birthday Racing Game',
+    client: 'Personal Project',
+    period: 'Mar 2020 – Apr 2020',
+    startYear: 2020,
+    dateStart: [2020, 3],
+    dateEnd: [2020, 4],
+    category: 'hobby',
+    summary:
+      'A fully networked 3D multiplayer racing game built in Unity as a birthday surprise during COVID-19 lockdown. Features a custom-modelled track with loops and ramps, multiple vehicle types, a MongoDB-backed account system, and a confetti easter egg that fires at the finish line.',
+    fullDescription: `
+Built during the COVID-19 lockdown in spring 2020 as a birthday gift — a complete 3D multiplayer racing game made entirely from scratch in Unity over a few weeks. The goal was to create something personalised, playable, and full of small surprises to celebrate the occasion.
+
+**Repository:** [github.com/ARobLar/Play-N-Fun](https://github.com/ARobLar/Play-N-Fun/tree/Development)
+
+**Multiplayer Architecture**
+
+The game runs on a client-server model built on Unity's NetworkTransport layer. The server opens two simultaneous ports to support both native desktop clients and browser-based WebGL clients:
+
+- **TCP port 26000** — for standalone (Windows/Mac/Linux) clients
+- **WebSocket port 26001** — for WebGL browser builds, so the game could be played directly in a web browser without installation
+
+Messages are serialised using BinaryFormatter and dispatched through a typed operation-code system (NetOP enum), making the protocol easily extensible. The server supports up to 10 concurrent connections and tracks each player's active connection ID.
+
+**Account System**
+
+A full user account system was built on top of MongoDB Atlas (migrated from the deprecated mLab service during development). The system supports:
+
+- Account creation with username, email, and SHA-256 hashed password — with duplicate username detection
+- Login with either email or a username#discriminator pair (Discord-style) — e.g. \`Robin#0042\`
+- Session tokens (64-character cryptographically random strings) issued on login to identify authenticated sessions
+- Player state tracking: active connection ID, login timestamp, and online status stored back to the database on each login
+
+**The Track**
+
+The custom race track was modelled in FBX and imported directly into Unity. It features:
+
+- A looping circuit with a primary jump ramp and multiple mini-ramps for airtime
+- Elevated ramps leading outside the main track boundary
+- Pillars, walls, and obstacles to navigate around
+- Destructible smash-boxes scattered along the route for physics-driven mayhem
+- A finish line with two upright poles as the timing trigger
+- Tree-lined terrain surrounding the course
+
+**Vehicles and Scenes**
+
+Multiple vehicle types are supported, each with their own physics model and audio mixer:
+- **Car** — primary racing vehicle with a stable follow-camera
+- **Jet plane (2-axis)** — simplified aircraft flight model
+- **Propeller plane (4-axis)** — full flight controls including roll and yaw
+- **RollerBall** — physics-driven sphere mode for chaos
+- **First/Third person character** — on-foot mode
+
+The CameraStable script keeps the chase camera sane: it copies the car's Y-rotation (heading) but strips the X and Z components, so the camera never flips over when the car hits a ramp.
+
+**Easter Eggs**
+
+- **Confetti cannon** — a particle system wired to the finish line fires a burst of coloured confetti (the ParticleClouds material, rendered in the game's birthday-palette of pink, teal, orange, mauve, yellow, and turquoise). The ParticleSceneControls system supports Instantiate mode (one-shot bursts), Trail mode (continuous stream while held), and Activate mode (ambient looping effect).
+- **Slow-motion toggle** — a hidden button drops time scale to 0.3×, complete with a UI icon swap. Time snaps back on destroy, preventing a frozen-game bug.
+- **Laser bolt** — a custom-modelled projectile (LaserBolt.fbx) tucked into the scene as an unlockable weapon.
+- **Smash boxes** — physics rigidbody boxes and box-piles that explode on impact; satisfying to drive through at speed.
+
+**UI and Menus**
+
+- Main menu with scene loader (loads into network lobby or direct race)
+- Pause menu that freezes \`Time.timeScale\` to 0 and mutes \`AudioListener.volume\` simultaneously — then correctly restores both on resume
+- Network game lobby and score bar UI for tracking multiplayer race positions
+- Camera-switch UI to flip between vehicle views mid-race
+- Level reset button (re-loads the current scene from scratch)
+
+**Tech Stack**
+
+Unity 2019 · C# · Unity NetworkTransport · Photon PUN · MongoDB Atlas · BinaryFormatter serialisation · FBX custom models · Unity Standard Assets (vehicles, cameras, particles) · WebGL build target
+    `,
+    roles: ['Solo Developer', 'Game Designer', 'Level Designer'],
+    keywords: ['Unity3D', 'C#', 'Multiplayer', 'MongoDB', 'Networking', 'Game Development', 'WebGL', 'Photon', '3D Modelling', 'Particle Systems'],
+    image: '/images/game.jpg',
+  },
+  {
     slug: 'engineers-without-borders',
     title: 'Schools of the Future — Mozambique',
     client: 'Engineers Without Borders (EWB)',
@@ -430,7 +509,7 @@ The MSc directly informs his current specialisation in agentic AI, LLM integrati
     dateEnd: [2022, 6],
     category: 'academic',
     summary:
-      'Led the analytical work for a university investment club during the MSc AI programme. The mandate: identify high-return equity investments while keeping risk mitigated. Produced two full research cycles — AMD and Yamana Gold — each covering fundamental, financial, and technical analysis culminating in a formal investment recommendation.',
+      'Led the analytical work for a university investment club during the MSc AI programme. The mandate: identify high-return equity investments while keeping risk mitigated. Produced three full research cycles — AMD, Thermo Fisher Scientific, and Yamana Gold — each covering fundamental, financial, and technical analysis culminating in a formal investment recommendation.',
     fullDescription: `
 University Investment Club, Jönköping University — MSc AI Programme (2021–2022)
 
@@ -452,6 +531,8 @@ Each full cycle produced a written research report and a formal presentation del
 **Analyses Completed**
 
 **AMD (Advanced Micro Devices), Q4 2021** — Semiconductor sector. BUY recommendation based on growing CPU/GPU market share, an exceptionally clean balance sheet (D/E ratio of 0.04), strong CEO leadership under Lisa Su (+1,300% share price since 2014), and structural demand tailwinds from gaming, HPC, autonomous vehicles, and data centres. Technical price target: 200 USD.
+
+**Thermo Fisher Scientific, Q1 2022** — Life sciences & healthcare sector. STRONG BUY recommendation based on a 12.64% revenue CAGR, an attractive PEG ratio of 1.85 (growing faster than valuation implies), an aggressive acquisition growth engine (~40 acquisitions since formation), and a short-term RSI oversold dip interpreted as a discount entry into a high-quality long-term compounder.
 
 **Yamana Gold, Q1 2022** — Precious metals sector. BUY recommendation based on the inflation hedge thesis, Americas-only mine portfolio with no Russia exposure (competitors with Russian operations were facing forced shutdowns due to Ukraine war sanctions), undervaluation relative to peers, and a confirmed technical uptrend above both the 50 and 200 SMA. Timed to align with the macro environment of surging inflation and geopolitical uncertainty.
 
@@ -519,6 +600,91 @@ AMD is well positioned to capitalise on structural semiconductor demand growth. 
     `,
     roles: ['Lead Analyst', 'Financial Analyst'],
     keywords: ['Equity Research', 'Semiconductors', 'Fundamental Analysis', 'Technical Analysis', 'Comparable Company Analysis', 'Financial Ratios', 'Investment Thesis', 'Buy Recommendation'],
+    image: '/images/finance.jpg',
+  },
+  {
+    slug: 'investment-thermofisher',
+    title: 'Thermo Fisher Scientific — Equity Research & Investment Analysis',
+    client: 'Investment Club, Jönköping University',
+    period: 'Q1 2022',
+    startYear: 2022,
+    dateStart: [2022, 1],
+    dateEnd: [2022, 2],
+    category: 'hobby',
+    summary:
+      'Full equity research report on Thermo Fisher Scientific produced for the university investment club. Covered company profile, business segments, market dynamics, competitor analysis, financial ratios, and technical analysis — culminating in a strong BUY recommendation for one of the world\'s leading life science companies.',
+    fullDescription: `
+**Team:** Robin Larsson (Lead Analyst), Rasmus Bogren, Valeria Vitale
+
+Thermo Fisher Scientific was selected as a third investment candidate for the university investment club. The analysis focused on the healthcare and life sciences sector — a defensively positioned, structurally growing market with high barriers to entry.
+
+**Company Overview**
+
+Thermo Fisher Scientific is an American life sciences company founded in 2006 through the merger of Thermo Electron and Fisher Scientific (with roots dating back to 1956). Headquartered in Waltham, Massachusetts, it is the world leader in serving science with annual revenue of ~$40B, 130,000+ employees (up from 75,000 in 2019 — almost doubled through acquisitions), and the same CEO, Marc N. Casper, since 2009.
+
+The company consists of nine operating brands: Thermo Scientific, Applied Biosystems, Invitrogen, Fisher Scientific, Unity Lab Services, Patheon, PPD, Ion Torrent, and Gibco.
+
+**Business Segments and Geography**
+
+Revenue breakdown by segment:
+- Life Sciences Solutions: 37.0%
+- Laboratory Products & Services: 35.2%
+- Analytical Instruments: 14.4%
+- Specialty Diagnostics: 13.4%
+
+Revenue breakdown by geography:
+- United States: 48.2%
+- China: 8.8%
+- Rest of world: 43.0%
+
+**Market Analysis**
+
+The company operates at the intersection of two fast-growing markets:
+- Global healthcare market: projected to reach $665.37B by 2028; US healthcare spending estimated to double from $4T (2020) to $8.3T by 2040
+- Clinical diagnostics market: $70B (2021) → $99B by 2027, growing at 6.1% CAGR, driven by infectious and chronic disease incidence and automated platform adoption
+
+**Company Analysis**
+
+- Mission: "enabling customers to make the world healthier, cleaner and safer"
+- Growth strategy rests on three pillars: developing high-impact innovative products, leveraging scale in high-growth and emerging markets, and delivering a unique value proposition
+- Aggressive acquisition model: formed by merger, then made ~40 further acquisitions — including PeproTech ($1.85B, Dec 2021), PPD ($17.4B clinical research organisation, Dec 2021), Mesa BioTech (Feb 2021), and Propel Labs cell sorting technology (Feb 2021)
+- $3B share buyback programme authorised (Q3 2021)
+- Committed to net-zero carbon emissions by 2050; 30% GHG reduction target by 2030
+- Named on Forbes most female-friendly companies list; 100% LGBTQ+ workplace equality rating (HRC) for seventh consecutive year
+
+**Competitor Analysis**
+
+| Competitor | Revenue | Market Cap | Focus |
+|---|---|---|---|
+| Roche | $61.2B | $323.95B | Pharma + diagnostics |
+| Abbott | $43.1B | $212.2B | Diagnostics, medical devices |
+| Danaher | $29.5B | $180.3B | Life sciences, diagnostics, environmental |
+| Ingersoll Rand | $5.2B | $19.2B | Industrial flow & compression |
+
+Thermo Fisher competes across all segments but differentiates through its breadth of portfolio (equipment, consumables, reagents, software) and acquisition-driven knowledge accumulation.
+
+**Financial Analysis**
+
+- Revenue CAGR of 12.64% since 2018 — stable, accelerating growth
+- P/E ratio of 28 — in line with peers
+- **PEG ratio of 1.85** — more attractive than most competitors, indicating the company is growing faster than its valuation implies
+- Low dividend payout (quarterly dividend of $0.26/share) with the majority of capital returned via share buybacks rather than dividends
+- Strong net earnings and profit margins in line with the peer group; efficient asset management
+
+**Technical Analysis**
+
+- At time of analysis: stock trading **below** both the 50 and 200 SMA — a short-term bearish signal, but interpreted as a buying opportunity rather than a structural break
+- RSI reaching oversold territory — a classic mean-reversion setup in a fundamentally strong company
+- Year-to-date: down -18% (in line with broader market correction)
+- Three-year performance: **up +96%**, outperforming both the S&P 500 and OMXS30 over the longer horizon
+- The team interpreted the dip as a discount entry point into a high-quality compounder
+
+**Conclusion: STRONG BUY**
+
+Thermo Fisher combines defensively positioned, structurally growing markets with an acquisition-driven growth engine and strong financial fundamentals. The short-term technical weakness (below SMAs, oversold RSI) provided an attractive entry point into a company with a multi-decade track record of compounding shareholder value. The team's strong conviction was reflected in a STRONG BUY recommendation.
+    `,
+    roles: ['Lead Analyst', 'Financial Analyst'],
+    keywords: ['Equity Research', 'Life Sciences', 'Healthcare', 'Fundamental Analysis', 'Technical Analysis', 'Comparable Company Analysis', 'Financial Ratios', 'Buy Recommendation'],
     image: '/images/finance.jpg',
   },
   {
