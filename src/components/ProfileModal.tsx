@@ -87,7 +87,7 @@ function LinkedInProfile({ url }: { url: string }) {
       company: 'Sopra Steria',
       period: 'May 2025 – Present · 1 yr',
       location: 'Stockholm, Sweden',
-      desc: 'Technical Owner and .NET developer on Region Stockholm's Assistive Devices Portal, building an API integration layer for 300+ healthcare suppliers.',
+      desc: 'Technical Owner and .NET developer on Region Stockholm\u2019s Assistive Devices Portal, building an API integration layer for 300+ healthcare suppliers.',
     },
     {
       logo: <Badge initials="EL" bg="#1a1a2e" />,
