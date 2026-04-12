@@ -11,10 +11,10 @@ function toDecimal([year, month]: [number, number]) {
 
 const NOW: [number, number] = [2026, 4]
 
-// Maps client → employer company (used for colour)
+// Maps client → employer company (used for colour).
+// Clients not listed here fall back to their own name as the company.
 const CLIENT_TO_COMPANY: Record<string, string> = {
   'Region Stockholm (via Sopra Steria)': 'Sopra Steria',
-  'Elefant':                             'Ubit',
   'Secondry':                            'Ubit',
   'All White Online':                    'Ubit',
   'Ingenius':                            'Ubit',
@@ -35,6 +35,7 @@ const COMPANY_COLORS: Record<string, string> = {
   'ABB':                       '#dc2626',
   'Jönköping University':      '#0891b2',
   'Ubit':                      '#6366f1',
+  'Elefant':                   '#db2777',
   'Sopra Steria':              '#2563eb',
 }
 const FALLBACK_COLOR = '#64748b'

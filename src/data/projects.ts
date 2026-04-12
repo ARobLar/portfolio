@@ -423,26 +423,25 @@ The MSc directly informs his current specialisation in agentic AI, LLM integrati
   {
     slug: 'ubit-consulting',
     title: 'Ubit — Digital Startup Consulting',
-    client: 'Ubit (own company)',
+    client: 'Ubit',
     period: 'Feb 2023 – Apr 2025',
     startYear: 2023,
     dateStart: [2023, 2],
     dateEnd: [2025, 4],
     category: 'professional',
     summary:
-      'Founded and ran Ubit, a digital consulting firm helping non-technical startup founders build their first MVP or MLP. Delivered five platforms across EdTech, fintech, e-commerce, events, and retail media — all as sole technical lead.',
+      'Worked at Ubit, a digital consulting firm helping non-technical startup founders build their first MVP or MLP. Delivered four platforms across EdTech, fintech, e-commerce, and events — all as sole technical lead.',
     fullDescription: `
-Ubit was Robin's own digital startup consultancy, founded to help non-technical founders turn ideas into testable, investable digital products.
+Ubit is a digital startup consultancy helping non-technical founders turn ideas into testable, investable digital products.
 
 **The model:** Work directly with founders to build a platform validating their 2–3 core hypotheses, with 1–2 years of future development in mind — written so other developers could continue it cleanly.
 
-**Engagements delivered under Ubit:**
+**Engagements delivered at Ubit:**
 
 - **Ingenius** (Jun 2023 – Feb 2024) — AI-personalised global EdTech platform
 - **Celebratix** (Feb 2023 – Jun 2023) — B2B2C event ticketing for Netherlands festivals
 - **Secondry** (Sep 2024 – Jan 2025) — Fintech platform for trading unlisted Swedish shares
 - **All White Online / Price Engine** (Feb 2024 – Apr 2025) — Competitive pricing intelligence for European e-commerce
-- **Elefant** (Feb 2024 – Apr 2025) — Retail Media Network with physical + digital advertising
 
 **Additional services delivered:**
 - Data analysis and growth hacking
@@ -453,7 +452,7 @@ Ubit was Robin's own digital startup consultancy, founded to help non-technical 
 
 Robin operated as sole technical owner on each engagement — from first conversation with the founder to production deployment.
     `,
-    roles: ['Founder', 'Tech Lead', 'Solution Architect', 'Full Stack Developer'],
+    roles: ['Tech Lead', 'Solution Architect', 'Full Stack Developer'],
     keywords: ['LEAN Startup', 'MVP Development', 'Product Strategy', 'Full Stack', 'Growth Hacking', 'SEO', 'Architecture', 'Startup Consulting'],
     image: '/images/consulting.jpg',
   },
