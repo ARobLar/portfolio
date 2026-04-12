@@ -60,14 +60,41 @@ interface LanedProject {
 }
 
 function assignLanes(items: LanedProject[]): LanedProject[] {
-  const sorted = [...items].sort((a, b) => a.startDec - b.startDec)
-  const laneEnds: number[] = []
-  return sorted.map((item) => {
-    const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.01)
-    const assigned = lane === -1 ? laneEnds.length : lane
-    laneEnds[assigned] = item.endDec
-    return { ...item, lane: assigned }
+  // Group items by employer company so same-colour bars stay in adjacent lanes.
+  const byCompany: Map<string, LanedProject[]> = new Map()
+  for (const item of items) {
+    const co = getCompany(item.project)
+    if (!byCompany.has(co)) byCompany.set(co, [])
+    byCompany.get(co)!.push(item)
+  }
+
+  // Order companies by their earliest start date.
+  const companyOrder = [...byCompany.keys()].sort((a, b) => {
+    const minA = Math.min(...byCompany.get(a)!.map((i) => i.startDec))
+    const minB = Math.min(...byCompany.get(b)!.map((i) => i.startDec))
+    return minA - minB
   })
+
+  const result: LanedProject[] = []
+  let baseLane = 0
+
+  for (const co of companyOrder) {
+    const coItems = [...byCompany.get(co)!].sort((a, b) => a.startDec - b.startDec)
+    const laneEnds: number[] = []
+    let maxIntraLane = 0
+
+    for (const item of coItems) {
+      const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.01)
+      const assigned = lane === -1 ? laneEnds.length : lane
+      laneEnds[assigned] = item.endDec
+      maxIntraLane = Math.max(maxIntraLane, assigned)
+      result.push({ ...item, lane: baseLane + assigned })
+    }
+
+    baseLane += maxIntraLane + 1
+  }
+
+  return result
 }
 
 // Layout
@@ -183,9 +210,13 @@ export default function Timeline() {
             const itemTop = HEADER_H + lane * (LANE_H + LANE_GAP)
             const color   = getColor(project)
 
-            // Bar label: primary role; sub-label: employer company (drives colour)
-            const roleLabel   = project.roles[0] ?? project.title.split(' — ')[0]
-            const clientLabel = getCompany(project)
+            // Bar label: primary role; sub-label: employer company (drives colour).
+            // All Mälardalen University items are student experiences → uniform label.
+            const company     = getCompany(project)
+            const roleLabel   = company === 'Mälardalen University'
+              ? 'Student'
+              : (project.roles[0] ?? project.title.split(' — ')[0])
+            const clientLabel = company
 
             return (
               <Link
