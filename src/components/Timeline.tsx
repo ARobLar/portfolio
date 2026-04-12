@@ -11,7 +11,7 @@ function toDecimal([year, month]: [number, number]) {
 
 const NOW: [number, number] = [2026, 4]
 
-// Map client → canonical employer / company name
+// Maps client → employer company (used for colour)
 const CLIENT_TO_COMPANY: Record<string, string> = {
   'Region Stockholm (via Sopra Steria)': 'Sopra Steria',
   'Elefant':                             'Ubit',
@@ -28,132 +28,84 @@ const CLIENT_TO_COMPANY: Record<string, string> = {
   'Jönköping University':                'Jönköping University',
 }
 
-const COMPANY_COLORS: Record<string, { bg: string; bgLight: string; border: string }> = {
-  'Mälardalen University':    { bg: '#7c3aed', bgLight: 'rgba(124,58,237,0.07)', border: '#7c3aed' },
-  'Engineers Without Borders':{ bg: '#059669', bgLight: 'rgba(5,150,105,0.07)',  border: '#059669' },
-  '2M Engineering':           { bg: '#d97706', bgLight: 'rgba(217,119,6,0.07)',   border: '#d97706' },
-  'ABB':                      { bg: '#dc2626', bgLight: 'rgba(220,38,38,0.07)',   border: '#dc2626' },
-  'Jönköping University':     { bg: '#0891b2', bgLight: 'rgba(8,145,178,0.07)',   border: '#0891b2' },
-  'Ubit':                     { bg: '#6366f1', bgLight: 'rgba(99,102,241,0.07)',  border: '#6366f1' },
-  'Sopra Steria':             { bg: '#2563eb', bgLight: 'rgba(37,99,235,0.07)',   border: '#2563eb' },
+const COMPANY_COLORS: Record<string, string> = {
+  'Mälardalen University':     '#7c3aed',
+  'Engineers Without Borders': '#059669',
+  '2M Engineering':            '#d97706',
+  'ABB':                       '#dc2626',
+  'Jönköping University':      '#0891b2',
+  'Ubit':                      '#6366f1',
+  'Sopra Steria':              '#2563eb',
 }
-const FALLBACK_COLOR = { bg: '#64748b', bgLight: 'rgba(100,116,139,0.07)', border: '#64748b' }
+const FALLBACK_COLOR = '#64748b'
 
-function getCompany(p: Project) {
-  return CLIENT_TO_COMPANY[p.client] ?? p.client
+function getCompany(p: Project) { return CLIENT_TO_COMPANY[p.client] ?? p.client }
+function getColor(p: Project)   { return COMPANY_COLORS[getCompany(p)] ?? FALLBACK_COLOR }
+
+// Short display name for the sub-label (client / project company)
+function shortClient(p: Project): string {
+  return p.client
+    .replace(' (Netherlands)', '')
+    .replace(' (via Sopra Steria)', '')
+    .replace(' (EWB)', '')
+    .replace(', Japan', '')
 }
 
-interface PlacedProject {
+interface LanedProject {
   project: Project
-  subLane: number
+  lane: number
   startDec: number
   endDec: number
 }
 
-interface CompanyRow {
-  name: string
-  items: PlacedProject[]
-  subLaneCount: number
-  startDec: number
-}
-
-function assignSubLanes(
-  items: { project: Project; startDec: number; endDec: number }[],
-): PlacedProject[] {
+function assignLanes(items: LanedProject[]): LanedProject[] {
   const sorted = [...items].sort((a, b) => a.startDec - b.startDec)
   const laneEnds: number[] = []
   return sorted.map((item) => {
     const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.01)
-    const subLane = lane === -1 ? laneEnds.length : lane
-    laneEnds[subLane] = item.endDec
-    return { ...item, subLane }
+    const assigned = lane === -1 ? laneEnds.length : lane
+    laneEnds[assigned] = item.endDec
+    return { ...item, lane: assigned }
   })
 }
 
-// Layout constants
-const LABEL_W   = 152  // px — company label column width
-const HEADER_H  = 28   // px — year label row
-const LANE_H    = 34   // px — height of each sub-lane
-const LANE_GAP  = 6    // px — gap between sub-lanes
-const BAND_PAD  = 6    // px — top/bottom padding inside company band
-const CO_GAP    = 14   // px — gap between company bands
-const BAR_H     = 26   // px — bar height
-
-function companyBlockHeight(subLaneCount: number) {
-  return (
-    BAND_PAD * 2 +
-    subLaneCount * LANE_H +
-    Math.max(0, subLaneCount - 1) * LANE_GAP +
-    CO_GAP
-  )
-}
+// Layout
+const HEADER_H = 28
+const BAR_H    = 26
+const SUB_H    = 15   // sub-label row height
+const SUB_GAP  = 3    // gap between bar and sub-label
+const LANE_H   = BAR_H + SUB_GAP + SUB_H   // 44 px
+const LANE_GAP = 10
 
 export default function Timeline() {
   const [tooltip, setTooltip] = useState<{
-    project: Project
-    bx: number
-    by: number
+    project: Project; bx: number; by: number
   } | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
 
-  const { companyRows, minYear, maxYear, totalSpan, yearMarkers, companyBlocks, totalChartH } =
-    useMemo(() => {
-      const raw = projects
-        .filter((p) => p.dateStart && p.dateEnd !== undefined)
-        .map((p) => ({
-          project: p,
-          startDec: toDecimal(p.dateStart),
-          endDec: toDecimal(p.dateEnd ?? NOW),
-        }))
+  const { laned, minYear, maxYear, totalSpan, laneCount, yearMarkers } = useMemo(() => {
+    const raw: LanedProject[] = projects
+      .filter((p) => p.dateStart && p.dateEnd !== undefined)
+      .map((p) => ({
+        project: p,
+        lane: 0,
+        startDec: toDecimal(p.dateStart),
+        endDec: toDecimal(p.dateEnd ?? NOW),
+      }))
 
-      // Group by company
-      const byCompany = new Map<string, typeof raw>()
-      for (const item of raw) {
-        const co = getCompany(item.project)
-        if (!byCompany.has(co)) byCompany.set(co, [])
-        byCompany.get(co)!.push(item)
-      }
+    const laned = assignLanes(raw)
+    const minYear = Math.floor(Math.min(...laned.map((l) => l.startDec)))
+    const maxYear = Math.ceil(Math.max(...laned.map((l) => l.endDec))) + 0.1
+    const totalSpan = maxYear - minYear
+    const laneCount = Math.max(...laned.map((l) => l.lane)) + 1
 
-      // Build rows sorted by earliest start
-      const rows: CompanyRow[] = Array.from(byCompany.entries())
-        .map(([name, items]) => {
-          const placed = assignSubLanes(items)
-          return {
-            name,
-            items: placed,
-            subLaneCount: Math.max(...placed.map((p) => p.subLane)) + 1,
-            startDec: Math.min(...items.map((i) => i.startDec)),
-          }
-        })
-        .sort((a, b) => a.startDec - b.startDec)
+    const yearMarkers: number[] = []
+    for (let y = minYear; y <= Math.ceil(maxYear); y++) yearMarkers.push(y)
 
-      const allDecs = raw.flatMap((r) => [r.startDec, r.endDec])
-      const minYear = Math.floor(Math.min(...allDecs))
-      const maxYear = Math.ceil(Math.max(...allDecs)) + 0.1
-      const totalSpan = maxYear - minYear
+    return { laned, minYear, maxYear, totalSpan, laneCount, yearMarkers }
+  }, [])
 
-      const yearMarkers: number[] = []
-      for (let y = minYear; y <= Math.ceil(maxYear); y++) yearMarkers.push(y)
-
-      // Compute Y position for each company block in the chart
-      let y = HEADER_H
-      const companyBlocks = rows.map((row) => {
-        const blockY = y
-        const blockH = companyBlockHeight(row.subLaneCount)
-        y += blockH
-        return { row, blockY, blockH }
-      })
-
-      return {
-        companyRows: rows,
-        minYear,
-        maxYear,
-        totalSpan,
-        yearMarkers,
-        companyBlocks,
-        totalChartH: y,
-      }
-    }, [])
+  const totalH = HEADER_H + laneCount * (LANE_H + LANE_GAP)
 
   function pct(dec: number) {
     return ((dec - minYear) / totalSpan) * 100
@@ -163,295 +115,210 @@ export default function Timeline() {
     <section id="timeline" className="mx-auto max-w-6xl px-6 py-20">
       <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">Career Timeline</h2>
       <p className="mt-3 text-slate-500">
-        Each horizontal band is one employer — parallel bands show concurrent engagements.
-        Same colour = same company.
+        Every engagement mapped across time — overlapping bars show concurrent work.
+        Colour = employer company.
       </p>
 
       {/* Legend */}
-      <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-        {companyRows.map(({ name }) => {
-          const c = COMPANY_COLORS[name] ?? FALLBACK_COLOR
-          return (
-            <div key={name} className="flex items-center gap-2">
-              <span
-                className="inline-block h-3 w-3 rounded-sm"
-                style={{ background: c.bg }}
-              />
-              <span className="text-sm text-slate-600">{name}</span>
-            </div>
-          )
-        })}
+      <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+        {Object.entries(COMPANY_COLORS).map(([name, bg]) => (
+          <div key={name} className="flex items-center gap-2">
+            <span className="inline-block h-3 w-3 rounded-sm" style={{ background: bg }} />
+            <span className="text-sm text-slate-600">{name}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Chart — scrollable on narrow screens */}
-      <div className="relative mt-8 overflow-x-auto rounded-2xl border border-slate-100 bg-slate-50 shadow-sm">
-        <p className="px-4 pt-2 text-right text-[11px] text-slate-400 sm:hidden">← Scroll →</p>
-
-        <div style={{ display: 'flex', minWidth: 720 }}>
-          {/* ── Company label column ───────────────────────────────────── */}
-          <div
-            style={{
-              width: LABEL_W,
-              flexShrink: 0,
-              paddingTop: HEADER_H,
-              borderRight: '1px solid #e2e8f0',
-            }}
-          >
-            {companyBlocks.map(({ row, blockH }) => {
-              const c = COMPANY_COLORS[row.name] ?? FALLBACK_COLOR
-              return (
-                <div
-                  key={row.name}
-                  style={{
-                    height: blockH,
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingLeft: 14,
-                    paddingRight: 8,
-                    borderLeft: `4px solid ${c.border}`,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: c.border,
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {row.name}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* ── Chart area ─────────────────────────────────────────────── */}
-          <div
-            ref={chartRef}
-            style={{ flex: 1, position: 'relative', height: totalChartH }}
-            onPointerLeave={() => setTooltip(null)}
-          >
-            {/* Year grid lines + labels */}
-            {yearMarkers.map((y) => {
-              const left = pct(y)
-              if (left < 0 || left > 100) return null
-              return (
-                <div
-                  key={y}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    left: `${left}%`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      color: '#94a3b8',
-                      userSelect: 'none',
-                      paddingLeft: 3,
-                    }}
-                  >
-                    {y}
-                  </span>
-                  <div
-                    style={{
-                      flex: 1,
-                      borderLeft: '1px dashed #e2e8f0',
-                      marginTop: 3,
-                    }}
-                  />
-                </div>
-              )
-            })}
-
-            {/* Today line */}
-            {(() => {
-              const todayPct = pct(toDecimal(NOW))
-              return (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    left: `${todayPct}%`,
-                    zIndex: 10,
-                    borderLeft: '2px solid #60a5fa',
-                  }}
-                >
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 4,
-                      fontSize: 10,
-                      fontWeight: 600,
-                      color: '#3b82f6',
-                      whiteSpace: 'nowrap',
-                      userSelect: 'none',
-                    }}
-                  >
-                    Today
-                  </span>
-                </div>
-              )
-            })()}
-
-            {/* Company bands + project bars */}
-            {companyBlocks.map(({ row, blockY, blockH }) => {
-              const c = COMPANY_COLORS[row.name] ?? FALLBACK_COLOR
-
-              return (
-                <div key={row.name}>
-                  {/* Band background */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      left: 2,
-                      right: 2,
-                      top: blockY,
-                      height: blockH - CO_GAP,
-                      background: c.bgLight,
-                      borderRadius: 8,
-                      borderLeft: `3px solid ${c.border}22`,
-                    }}
-                  />
-
-                  {/* Project bars */}
-                  {row.items.map(({ project, subLane, startDec, endDec }) => {
-                    const left  = pct(startDec)
-                    const width = pct(endDec) - left
-                    const barTop =
-                      blockY +
-                      BAND_PAD +
-                      subLane * (LANE_H + LANE_GAP) +
-                      (LANE_H - BAR_H) / 2
-
-                    return (
-                      <Link
-                        key={project.slug}
-                        href={`/projects/${project.slug}/`}
-                        style={{
-                          position: 'absolute',
-                          left:     `${left}%`,
-                          width:    `max(${width}%, 0.4%)`,
-                          top:      barTop,
-                          height:   BAR_H,
-                          minWidth: 6,
-                          background: c.bg,
-                          borderRadius: 6,
-                          zIndex: 5,
-                          display: 'flex',
-                          alignItems: 'center',
-                          overflow: 'hidden',
-                          textDecoration: 'none',
-                          transition: 'filter 0.15s, transform 0.12s',
-                          boxShadow: `0 1px 4px ${c.bg}55`,
-                        }}
-                        onMouseEnter={(e) => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.filter    = 'brightness(1.18)'
-                          el.style.transform = 'scaleY(1.1)'
-                          const rect  = chartRef.current!.getBoundingClientRect()
-                          const bRect = el.getBoundingClientRect()
-                          setTooltip({
-                            project,
-                            bx: bRect.left - rect.left + bRect.width / 2,
-                            by: barTop,
-                          })
-                        }}
-                        onMouseLeave={(e) => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.filter    = ''
-                          el.style.transform = ''
-                          setTooltip(null)
-                        }}
-                      >
-                        <span
-                          style={{
-                            padding:      '0 8px',
-                            fontSize:     10,
-                            fontWeight:   700,
-                            color:        'rgba(255,255,255,0.93)',
-                            whiteSpace:   'nowrap',
-                            overflow:     'hidden',
-                            textOverflow: 'ellipsis',
-                            lineHeight:   1,
-                          }}
-                        >
-                          {project.title.split(' — ')[0]}
-                        </span>
-                      </Link>
-                    )
-                  })}
-                </div>
-              )
-            })}
-
-            {/* Tooltip */}
-            {tooltip && (
+      {/* Chart — horizontally scrollable on mobile */}
+      <div className="relative mt-8 overflow-x-auto rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">
+        <p className="mb-2 text-right text-[11px] text-slate-400 sm:hidden">← Scroll to explore →</p>
+        <div
+          ref={chartRef}
+          className="relative w-full"
+          style={{ height: totalH, minWidth: 600 }}
+          onPointerLeave={() => setTooltip(null)}
+        >
+          {/* Year grid lines + labels */}
+          {yearMarkers.map((y) => {
+            const left = pct(y)
+            if (left < 0 || left > 100) return null
+            return (
               <div
-                style={{
-                  position:   'absolute',
-                  zIndex:     30,
-                  pointerEvents: 'none',
-                  width:      224,
-                  borderRadius: 12,
-                  background: '#0f172a',
-                  padding:    12,
-                  boxShadow:  '0 12px 40px rgba(0,0,0,0.35)',
-                  color:      '#fff',
-                  fontSize:   12,
-                  left: Math.max(
-                    112,
-                    Math.min(tooltip.bx, (chartRef.current?.offsetWidth ?? 9999) - 112),
-                  ),
-                  top:       Math.max(0, tooltip.by - 112),
-                  transform: 'translateX(-50%)',
-                }}
+                key={y}
+                className="absolute top-0 bottom-0 flex flex-col"
+                style={{ left: `${left}%` }}
               >
-                {(() => {
-                  const company = getCompany(tooltip.project)
-                  const c = COMPANY_COLORS[company] ?? FALLBACK_COLOR
-                  return (
-                    <>
-                      <div
-                        style={{
-                          display:      'inline-block',
-                          background:   c.bg,
-                          borderRadius: 4,
-                          padding:      '2px 8px',
-                          fontSize:     10,
-                          fontWeight:   700,
-                          marginBottom: 6,
-                          color:        '#fff',
-                        }}
-                      >
-                        {company}
-                      </div>
-                      <div style={{ fontWeight: 600, lineHeight: 1.4, marginBottom: 4 }}>
-                        {tooltip.project.title}
-                      </div>
-                      <div style={{ color: '#94a3b8', marginBottom: 2 }}>
-                        {tooltip.project.period}
-                      </div>
-                      <div style={{ color: '#94a3b8', fontSize: 11 }}>
-                        {tooltip.project.client}
-                      </div>
-                      <div style={{ marginTop: 8, color: '#60a5fa', fontSize: 10 }}>
-                        Click to read more →
-                      </div>
-                    </>
-                  )
-                })()}
+                <span className="pl-0.5 text-[10px] font-semibold text-slate-400 select-none">
+                  {y}
+                </span>
+                <div className="mt-1 flex-1 border-l border-dashed border-slate-200" />
               </div>
-            )}
-          </div>
+            )
+          })}
+
+          {/* Today line */}
+          {(() => {
+            const todayPct = pct(toDecimal(NOW))
+            return (
+              <div
+                className="absolute top-0 bottom-0 z-10 border-l-2 border-blue-400"
+                style={{ left: `${todayPct}%` }}
+              >
+                <span className="absolute top-0 left-1 whitespace-nowrap select-none text-[10px] font-semibold text-blue-500">
+                  Today
+                </span>
+              </div>
+            )
+          })()}
+
+          {/* Project items */}
+          {laned.map(({ project, lane, startDec, endDec }) => {
+            const left    = pct(startDec)
+            const width   = pct(endDec) - left
+            const itemTop = HEADER_H + lane * (LANE_H + LANE_GAP)
+            const color   = getColor(project)
+
+            // Primary label: first role (most senior title)
+            const roleLabel  = project.roles[0] ?? project.title.split(' — ')[0]
+            const clientLabel = shortClient(project)
+
+            return (
+              <Link
+                key={project.slug}
+                href={`/projects/${project.slug}/`}
+                style={{
+                  position: 'absolute',
+                  left:     `${left}%`,
+                  width:    `max(${width}%, 0.4%)`,
+                  top:      itemTop,
+                  zIndex:   5,
+                  textDecoration: 'none',
+                  minWidth: 6,
+                }}
+                onMouseEnter={(e) => {
+                  const rect  = chartRef.current!.getBoundingClientRect()
+                  const bRect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                  setTooltip({
+                    project,
+                    bx: bRect.left - rect.left + bRect.width / 2,
+                    by: itemTop,
+                  })
+                }}
+                onMouseLeave={() => setTooltip(null)}
+              >
+                {/* ── Main bar ── */}
+                <div
+                  style={{
+                    height:     BAR_H,
+                    background: color,
+                    borderRadius: 6,
+                    overflow:   'hidden',
+                    display:    'flex',
+                    alignItems: 'center',
+                    boxShadow:  `0 1px 4px ${color}44`,
+                    transition: 'filter 0.15s, transform 0.12s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.filter    = 'brightness(1.15)'
+                    e.currentTarget.style.transform = 'scaleY(1.08)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.filter    = ''
+                    e.currentTarget.style.transform = ''
+                  }}
+                >
+                  <span
+                    style={{
+                      padding:      '0 8px',
+                      fontSize:     10,
+                      fontWeight:   700,
+                      color:        'rgba(255,255,255,0.93)',
+                      whiteSpace:   'nowrap',
+                      overflow:     'hidden',
+                      textOverflow: 'ellipsis',
+                      lineHeight:   1,
+                    }}
+                  >
+                    {roleLabel}
+                  </span>
+                </div>
+
+                {/* ── Company sub-label ── */}
+                <div
+                  style={{
+                    marginTop:  SUB_GAP,
+                    height:     SUB_H,
+                    paddingLeft: 4,
+                    overflow:   'hidden',
+                    display:    'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize:     9,
+                      fontWeight:   600,
+                      color,
+                      whiteSpace:   'nowrap',
+                      overflow:     'hidden',
+                      textOverflow: 'ellipsis',
+                      lineHeight:   1,
+                    }}
+                  >
+                    {clientLabel}
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
+
+          {/* Tooltip */}
+          {tooltip && (
+            <div
+              className="pointer-events-none absolute z-30 rounded-xl bg-slate-900 p-3 shadow-xl text-white"
+              style={{
+                width:     224,
+                fontSize:  12,
+                left: Math.max(
+                  112,
+                  Math.min(tooltip.bx, (chartRef.current?.offsetWidth ?? 9999) - 112),
+                ),
+                top:       Math.max(0, tooltip.by - 115),
+                transform: 'translateX(-50%)',
+              }}
+            >
+              {(() => {
+                const company = getCompany(tooltip.project)
+                const bg      = COMPANY_COLORS[company] ?? FALLBACK_COLOR
+                return (
+                  <>
+                    <div
+                      style={{
+                        display:      'inline-block',
+                        background:   bg,
+                        borderRadius: 4,
+                        padding:      '2px 8px',
+                        fontSize:     10,
+                        fontWeight:   700,
+                        marginBottom: 6,
+                        color:        '#fff',
+                      }}
+                    >
+                      {company}
+                    </div>
+                    <div className="font-semibold leading-snug mb-1">
+                      {tooltip.project.title}
+                    </div>
+                    <div className="text-slate-400 mb-0.5">{tooltip.project.period}</div>
+                    <div className="text-[11px] text-slate-400">
+                      {shortClient(tooltip.project)}
+                    </div>
+                    <div className="mt-2 text-[10px] text-blue-400">Click to read more →</div>
+                  </>
+                )
+              })()}
+            </div>
+          )}
         </div>
       </div>
     </section>
