@@ -147,7 +147,7 @@ Key outcomes:
 
 **As Full Stack Developer**, Robin implemented web scraping, data validation and normalization, API layer and dashboards. He was responsible for all UI/UX work for the platform: information architecture, component library, and interaction design, as well as user testing and iteration with the client.
     `,
-    roles: ['Requirements Analyst', 'Tech Lead', 'Solution Architect', 'Full Stack Developer'],
+    roles: ['Tech Lead', 'Solution Architect', 'Full Stack Developer', 'Requirements Analyst'],
     keywords: ['Next.js', 'React', '.NET Core', 'TypeScript', 'SQL Server', 'Azure', 'Docker', 'CI/CD', 'Web Scraping', 'Data Engineering', 'E-commerce'],
     image: '/images/ecommerce.jpg',
   },

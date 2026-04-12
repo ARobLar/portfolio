@@ -183,8 +183,8 @@ export default function Timeline() {
             const itemTop = HEADER_H + lane * (LANE_H + LANE_GAP)
             const color   = getColor(project)
 
-            // Bar label: project title; sub-label: employer company (drives colour)
-            const roleLabel   = project.title.split(' — ')[0]
+            // Bar label: primary role; sub-label: employer company (drives colour)
+            const roleLabel   = project.roles[0] ?? project.title.split(' — ')[0]
             const clientLabel = getCompany(project)
 
             return (
