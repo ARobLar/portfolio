@@ -3,13 +3,22 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { getProjectBySlug, getAdjacentProjects, projects } from '@/data/projects'
 
-/** Render inline **bold** markdown as <strong> elements. */
+/** Render inline **bold** and [text](url) markdown as React elements. */
 function renderInline(text: string): ReactNode {
-  const parts = text.split(/\*\*(.+?)\*\*/g)
+  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g)
   if (parts.length === 1) return text
-  return parts.map((part, i) =>
-    i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
-  )
+  return parts.map((part, i) => {
+    const boldMatch = part.match(/^\*\*([^*]+)\*\*$/)
+    if (boldMatch) return <strong key={i}>{boldMatch[1]}</strong>
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+    if (linkMatch)
+      return (
+        <a key={i} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+          {linkMatch[1]}
+        </a>
+      )
+    return part
+  })
 }
 
 interface Props {

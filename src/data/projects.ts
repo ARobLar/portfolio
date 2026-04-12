@@ -303,8 +303,8 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     featured: true,
   },
   {
-    slug: 'scooteroni',
-    title: 'Scooteroni — 3D Multiplayer Birthday Racing Game',
+    slug: 'happy-birthday-game',
+    title: 'Happy Birthday — Multiplayer 3D Party Game',
     client: 'Personal Project',
     period: 'Mar 2020 – Apr 2020',
     startYear: 2020,
@@ -312,73 +312,110 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     dateEnd: [2020, 4],
     category: 'hobby',
     summary:
-      'A fully networked 3D multiplayer racing game built in Unity as a birthday surprise during COVID-19 lockdown. Features a custom-modelled track with loops and ramps, multiple vehicle types, a MongoDB-backed account system, and a confetti easter egg that fires at the finish line.',
+      'A 3D multiplayer game built from scratch in Unity as a surprise birthday gift during COVID-19 lockdown. Features a fully custom client-server networking layer, WebGL browser support, a MongoDB-backed account system with Discord-style logins, and a confetti easter egg.',
     fullDescription: `
-Built during the COVID-19 lockdown in spring 2020 as a birthday gift — a complete 3D multiplayer racing game made entirely from scratch in Unity over a few weeks. The goal was to create something personalised, playable, and full of small surprises to celebrate the occasion.
+Built as a surprise birthday gift during the COVID-19 lockdown — a fully networked 3D multiplayer game created from scratch in Unity over a few weeks. The goal was to produce something personal, playable together over the internet, and full of small surprises to celebrate the occasion.
 
-**Repository:** [github.com/ARobLar/Play-N-Fun](https://github.com/ARobLar/Play-N-Fun/tree/Development)
+**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun/tree/Development/HappyBirthday)
 
 **Multiplayer Architecture**
 
-The game runs on a client-server model built on Unity's NetworkTransport layer. The server opens two simultaneous ports to support both native desktop clients and browser-based WebGL clients:
+Rather than using a pre-built matchmaking service, a custom client-server networking layer was written on top of Unity's NetworkTransport. The server opens two simultaneous ports so the game can be played from any device:
 
-- **TCP port 26000** — for standalone (Windows/Mac/Linux) clients
-- **WebSocket port 26001** — for WebGL browser builds, so the game could be played directly in a web browser without installation
+- **TCP port 26000** — for standalone desktop clients (Windows/Mac/Linux)
+- **WebSocket port 26001** — for WebGL browser builds, so friends could join directly in a browser tab without installing anything
 
-Messages are serialised using BinaryFormatter and dispatched through a typed operation-code system (NetOP enum), making the protocol easily extensible. The server supports up to 10 concurrent connections and tracks each player's active connection ID.
+Messages are binary-serialised with BinaryFormatter and dispatched through a typed operation-code system (the NetOP enum), keeping the protocol clean and extensible. The server handles up to 10 concurrent connections and tracks every player's active connection ID.
 
 **Account System**
 
-A full user account system was built on top of MongoDB Atlas (migrated from the deprecated mLab service during development). The system supports:
+A full account and authentication system was built on MongoDB Atlas (migrated from the deprecated mLab service mid-development — required installing updated MongoDB C# drivers as NuGet packages and placing the DLLs in Unity's Plugins folder). Features:
 
-- Account creation with username, email, and SHA-256 hashed password — with duplicate username detection
-- Login with either email or a username#discriminator pair (Discord-style) — e.g. \`Robin#0042\`
-- Session tokens (64-character cryptographically random strings) issued on login to identify authenticated sessions
-- Player state tracking: active connection ID, login timestamp, and online status stored back to the database on each login
+- Account creation with username, email, and SHA-256 hashed password, with duplicate username detection
+- Login via email or a username#discriminator pair (Discord-style) — e.g. \`Robin#0042\`
+- Input validation via regex for email format, username length/characters, and the discriminator suffix
+- Session tokens: 64-character cryptographically random strings (alphanumeric) generated server-side and issued on successful login
+- Player state persisted to the database on each login: active connection ID, login timestamp, and online status
 
-**The Track**
+**Lobby Scene**
 
-The custom race track was modelled in FBX and imported directly into Unity. It features:
+The client-side lobby is a Unity scene with a Canvas UI managing two flows side by side: account creation (username, password, email fields) and login (username#discriminator + password). The canvas group is disabled during network calls and re-enabled on response — preventing duplicate submissions while a request is in flight.
 
-- A looping circuit with a primary jump ramp and multiple mini-ramps for airtime
-- Elevated ramps leading outside the main track boundary
-- Pillars, walls, and obstacles to navigate around
-- Destructible smash-boxes scattered along the route for physics-driven mayhem
-- A finish line with two upright poles as the timing trigger
-- Tree-lined terrain surrounding the course
+**Easter Egg — Confetti**
 
-**Vehicles and Scenes**
-
-Multiple vehicle types are supported, each with their own physics model and audio mixer:
-- **Car** — primary racing vehicle with a stable follow-camera
-- **Jet plane (2-axis)** — simplified aircraft flight model
-- **Propeller plane (4-axis)** — full flight controls including roll and yaw
-- **RollerBall** — physics-driven sphere mode for chaos
-- **First/Third person character** — on-foot mode
-
-The CameraStable script keeps the chase camera sane: it copies the car's Y-rotation (heading) but strips the X and Z components, so the camera never flips over when the car hits a ramp.
-
-**Easter Eggs**
-
-- **Confetti cannon** — a particle system wired to the finish line fires a burst of coloured confetti (the ParticleClouds material, rendered in the game's birthday-palette of pink, teal, orange, mauve, yellow, and turquoise). The ParticleSceneControls system supports Instantiate mode (one-shot bursts), Trail mode (continuous stream while held), and Activate mode (ambient looping effect).
-- **Slow-motion toggle** — a hidden button drops time scale to 0.3×, complete with a UI icon swap. Time snaps back on destroy, preventing a frozen-game bug.
-- **Laser bolt** — a custom-modelled projectile (LaserBolt.fbx) tucked into the scene as an unlockable weapon.
-- **Smash boxes** — physics rigidbody boxes and box-piles that explode on impact; satisfying to drive through at speed.
-
-**UI and Menus**
-
-- Main menu with scene loader (loads into network lobby or direct race)
-- Pause menu that freezes \`Time.timeScale\` to 0 and mutes \`AudioListener.volume\` simultaneously — then correctly restores both on resume
-- Network game lobby and score bar UI for tracking multiplayer race positions
-- Camera-switch UI to flip between vehicle views mid-race
-- Level reset button (re-loads the current scene from scratch)
+As a birthday surprise, a confetti particle system is wired into the scene. The ParticleSceneControls system supports three modes: Instantiate (single-shot burst on click), Trail (continuous stream while held), and Activate (ambient looping). The ParticleClouds material renders the confetti in a vibrant birthday palette — pink, teal, orange, mauve, yellow, and turquoise — matching the overall colour theme of the game.
 
 **Tech Stack**
 
-Unity 2019 · C# · Unity NetworkTransport · Photon PUN · MongoDB Atlas · BinaryFormatter serialisation · FBX custom models · Unity Standard Assets (vehicles, cameras, particles) · WebGL build target
+Unity 2019 · C# · Unity NetworkTransport · MongoDB Atlas · BinaryFormatter · SHA-256 · WebGL build target · Regex input validation
+    `,
+    roles: ['Solo Developer', 'Game Designer', 'Network Engineer'],
+    keywords: ['Unity3D', 'C#', 'Multiplayer', 'MongoDB', 'Networking', 'WebGL', 'Game Development', 'Authentication', 'Particle Systems', 'Birthday'],
+    image: '/images/game.jpg',
+  },
+  {
+    slug: 'scooteroni',
+    title: 'Scooteroni — 3D Multiplayer Racing Game',
+    client: 'Personal Project',
+    period: 'Mar 2020 – Apr 2020',
+    startYear: 2020,
+    dateStart: [2020, 3],
+    dateEnd: [2020, 4],
+    category: 'hobby',
+    summary:
+      'A 3D multiplayer vehicle racing game built in Unity during the COVID-19 lockdown. Features a custom-modelled circuit with loops, ramps, and obstacles, five driveable vehicle types, Photon-powered multiplayer, and a handful of hidden easter eggs including a confetti cannon and slow-motion mode.',
+    fullDescription: `
+A self-contained 3D racing game built for fun in Unity during the COVID-19 lockdown. Everything from the track geometry to the camera behaviour was built from scratch, with Photon PUN providing the online multiplayer layer.
+
+**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun/tree/Development/CarGame)
+
+**The Track**
+
+The race circuit was modelled in FBX and imported directly into Unity. The layout includes:
+
+- A looping circuit with a primary jump ramp launching cars into the air
+- Multiple mini-ramps and an elevated ramp leading outside the track boundary
+- Pillars, walls, and obstacles to navigate around
+- A finish line with two upright poles as the timing marker
+- Tree-lined terrain surrounding the course
+
+**Vehicles**
+
+Five vehicle types are playable, each with their own physics model and dedicated audio mixer:
+
+- **Car** — the primary racing vehicle, chased by a stabilised follow-camera
+- **Jet plane (2-axis)** — simplified aircraft flight model with two control axes
+- **Propeller plane (4-axis)** — full flight controls including roll and yaw
+- **RollerBall** — physics sphere mode for chaotic fun
+- **First/Third person character** — on-foot traversal of the track
+
+The CameraStable script keeps the chase camera smooth: it copies the car's Y-rotation (heading direction) but strips the X and Z components, so the camera never flips or tilts when the car goes over a ramp or spins out.
+
+**Easter Eggs**
+
+- **Confetti cannon** — a particle system fires bursts of coloured confetti. The ParticleSceneControls system supports three trigger modes: Instantiate (one-shot burst), Trail (continuous stream while held), and Activate (looping ambient). The ParticleClouds material renders the confetti in vibrant colours.
+- **Slow-motion toggle** — a button drops Time.timeScale to 0.3×, with a UI icon swap to indicate the mode. Time is correctly restored on component destroy, preventing a permanently-frozen game state.
+- **Laser bolt** — a custom-modelled projectile (LaserBolt.fbx) hidden in the scene as an unlockable weapon.
+- **Smash boxes** — physics rigidbody boxes and box-piles scattered around the track that explode on impact.
+
+**UI and Menus**
+
+- Main menu with scene loader (selects race scene or network lobby)
+- Pause menu that simultaneously freezes Time.timeScale to 0 and mutes AudioListener.volume — and correctly restores both values on resume
+- Network game lobby and live score bar UI for multiplayer race positions
+- Camera-switch UI for toggling between vehicle views mid-race
+- Level reset button that reloads the entire scene from scratch
+
+**Multiplayer**
+
+Online multiplayer is powered by Photon PUN, handling room creation, player synchronisation, and network events across players.
+
+**Tech Stack**
+
+Unity 2019 · C# · Photon PUN · FBX custom models · Unity Standard Assets (vehicles, cameras, particles)
     `,
     roles: ['Solo Developer', 'Game Designer', 'Level Designer'],
-    keywords: ['Unity3D', 'C#', 'Multiplayer', 'MongoDB', 'Networking', 'Game Development', 'WebGL', 'Photon', '3D Modelling', 'Particle Systems'],
+    keywords: ['Unity3D', 'C#', 'Multiplayer', 'Photon', 'Game Development', '3D Modelling', 'Particle Systems', 'Level Design', 'Physics'],
     image: '/images/game.jpg',
   },
   {
