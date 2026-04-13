@@ -65,7 +65,7 @@ function assignLanes(items: LanedProject[]): LanedProject[] {
   const sorted = [...items].sort((a, b) => a.startDec - b.startDec)
   const laneEnds: number[] = []
   return sorted.map((item) => {
-    const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.01)
+    const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.1)
     const assigned = lane === -1 ? laneEnds.length : lane
     laneEnds[assigned] = item.endDec
     return { ...item, lane: assigned }

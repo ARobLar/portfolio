@@ -473,7 +473,7 @@ This international experience not only broadened Robin's technical foundations b
     period: 'Aug 2014 – Jun 2020',
     startYear: 2014,
     dateStart: [2014, 8],
-    dateEnd: [2020, 6],
+    dateEnd: [2017, 3],
     category: 'academic',
     summary:
       '300-credit Civil Engineering degree in Robotics with Software & Architecture as main specialisation. Completed three Master\'s-level theses in Computer & Data Science, focusing on tracking algorithms, AI/ML, and modular system design. Secondary focus on hardware, mechanics, and embedded prototyping.',
@@ -499,6 +499,33 @@ This degree gave Robin the rare ability to think from transistor to cloud — un
     `,
     roles: ['Student', 'Graduate Researcher', 'Thesis Author'],
     keywords: ['Robotics', 'Computer Vision', 'Signal Processing', 'Algorithm Design', 'Software Architecture', 'Embedded Systems', 'PCB Design', 'MATLAB', 'C++'],
+    image: '/images/robotics-academic.jpg',
+  },
+  {
+    slug: 'malardalen-msc-thesis',
+    title: 'MSc Thesis — Mälardalen University',
+    client: 'Mälardalen University',
+    period: 'Aug 2019 – Jul 2020',
+    startYear: 2019,
+    dateStart: [2019, 8],
+    dateEnd: [2020, 7],
+    category: 'academic',
+    summary:
+      'Final Master\'s-level thesis completing the Civil Engineering degree in Robotics. Focused on algorithm design and modular software architecture in Computer & Data Science.',
+    fullDescription: `
+The final phase of the Civil Engineering programme in Robotics at Mälardalen University, completing the third and final Master's-level thesis.
+
+After working in the industry (2M Engineering, ABB) and completing the exchange semester at TU Eindhoven and the research internship in Japan, Robin returned to Mälardalen University to finalise the degree with the Master's thesis in Computer & Data Science.
+
+**Focus areas**
+- Algorithm design and analysis in Computer & Data Science
+- Modular software architecture
+- Applied machine learning and classical statistics
+
+See the main degree entry for the full programme overview.
+    `,
+    roles: ['Student', 'Thesis Author'],
+    keywords: ['Robotics', 'Algorithm Design', 'Software Architecture', 'Machine Learning', 'Computer Science'],
     image: '/images/robotics-academic.jpg',
   },
   {
