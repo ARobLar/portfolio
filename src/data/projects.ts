@@ -316,8 +316,6 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     fullDescription: `
 Built as a surprise birthday gift during the COVID-19 lockdown — a fully networked 3D multiplayer game created from scratch in Unity over a few weeks. The goal was to produce something personal, playable together over the internet, and full of small surprises to celebrate the occasion.
 
-**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun)
-
 **Multiplayer Architecture**
 
 Rather than using a pre-built matchmaking service, a custom client-server networking layer was written on top of Unity's NetworkTransport. The server opens two simultaneous ports so the game can be played from any device:
@@ -366,8 +364,6 @@ Unity 2019 · C# · Unity NetworkTransport · MongoDB Atlas · BinaryFormatter �
       'A 3D multiplayer vehicle racing game built in Unity during the COVID-19 lockdown. Features a custom-modelled circuit with loops, ramps, and obstacles, five driveable vehicle types, Photon-powered multiplayer, and a handful of hidden easter eggs including a confetti cannon and slow-motion mode.',
     fullDescription: `
 A self-contained 3D racing game built for fun in Unity during the COVID-19 lockdown. Everything from the track geometry to the camera behaviour was built from scratch, with Photon PUN providing the online multiplayer layer.
-
-**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun)
 
 **The Track**
 
@@ -438,7 +434,6 @@ As part of the Engineers Without Borders — Schools of the Future initiative, R
 
 **Impact**: The initiative empowered a generation of students in Mozambique with technical foundations and the confidence to pursue university education, creating a self-sustaining educational ecosystem.
 
-More information: [ewbnl.org — Schools of the Future Mozambique](https://www.ewbnl.org/portfolio-items/schools-of-the-future-mozambique/)
     `,
     roles: ['Volunteer Engineer', 'Workshop Facilitator', 'Curriculum Designer'],
     keywords: ['Education', 'Electronics', 'Programming', 'Sustainability', 'Volunteering', 'Social Impact', 'Mozambique'],
