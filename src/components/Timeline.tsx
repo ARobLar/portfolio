@@ -60,43 +60,60 @@ interface LanedProject {
 }
 
 function assignLanes(items: LanedProject[]): LanedProject[] {
-  // Company-banded greedy fill:
-  //   1. Group items by employer company so same-colour bars stay together.
-  //   2. Within each company, pack items greedily into the fewest rows.
-  //   3. Stack company bands top-to-bottom ordered by earliest start date.
-  // Tolerance of 0.1 yr (~5 weeks) treats near-sequential items as non-overlapping.
-  const TOL = 0.1
+  // Compressed company-band algorithm:
+  //   1. Group items by employer company.
+  //   2. Within each company, pack items greedily (TOL 0.1 yr handles
+  //      near-sequential handovers like Japan → Eindhoven).
+  //   3. Place each company's band at the LOWEST base row where none of
+  //      its items overlap with already-placed items (strict, no tolerance).
+  //      This lets later companies reuse rows vacated by earlier ones.
+  const INTRA_TOL = 0.1
 
+  // Group and order companies by their earliest start
   const byCompany = new Map<string, LanedProject[]>()
   for (const item of items) {
     const co = getCompany(item.project)
     if (!byCompany.has(co)) byCompany.set(co, [])
     byCompany.get(co)!.push(item)
   }
+  const companyOrder = [...byCompany.keys()].sort((a, b) =>
+    Math.min(...byCompany.get(a)!.map((i) => i.startDec)) -
+    Math.min(...byCompany.get(b)!.map((i) => i.startDec)),
+  )
 
-  const companyOrder = [...byCompany.keys()].sort((a, b) => {
-    const minA = Math.min(...byCompany.get(a)!.map((i) => i.startDec))
-    const minB = Math.min(...byCompany.get(b)!.map((i) => i.startDec))
-    return minA - minB
+  // Step 1: intra-company packing → get { item, intraLane } per company
+  type Packed = { item: LanedProject; intraLane: number }
+  const bands: Packed[][] = companyOrder.map((co) => {
+    const coItems = [...byCompany.get(co)!].sort((a, b) => a.startDec - b.startDec)
+    const intraEnds: number[] = []
+    return coItems.map((item) => {
+      const l = intraEnds.findIndex((e) => e <= item.startDec + INTRA_TOL)
+      const intraLane = l === -1 ? intraEnds.length : l
+      intraEnds[intraLane] = item.endDec
+      return { item, intraLane }
+    })
   })
 
+  // Step 2: place each band at lowest base where it fits (no cross-company overlap)
   const result: LanedProject[] = []
-  let baseLane = 0
+  const globalEnd: number[] = []   // last end-time placed on each absolute lane
 
-  for (const co of companyOrder) {
-    const coItems = [...byCompany.get(co)!].sort((a, b) => a.startDec - b.startDec)
-    const laneEnds: number[] = []
-    let maxIntra = 0
-
-    for (const item of coItems) {
-      const lane = laneEnds.findIndex((end) => end <= item.startDec + TOL)
-      const assigned = lane === -1 ? laneEnds.length : lane
-      laneEnds[assigned] = item.endDec
-      maxIntra = Math.max(maxIntra, assigned)
-      result.push({ ...item, lane: baseLane + assigned })
+  for (const band of bands) {
+    // Find the lowest base such that for every packed item,
+    // the absolute lane it would occupy is free (globalEnd ≤ item.startDec).
+    let base = 0
+    for (;;) {
+      const fits = band.every(
+        ({ item, intraLane }) => (globalEnd[base + intraLane] ?? 0) <= item.startDec,
+      )
+      if (fits) break
+      base++
     }
-
-    baseLane += maxIntra + 1
+    for (const { item, intraLane } of band) {
+      const abs = base + intraLane
+      globalEnd[abs] = Math.max(globalEnd[abs] ?? 0, item.endDec)
+      result.push({ ...item, lane: abs })
+    }
   }
 
   return result
