@@ -297,7 +297,7 @@ The client needed autonomous, energy-efficient algorithms that can execute local
 
 **As Full Stack Developer**, Robin implemented the full solution: from camera reading and efficient frame handling to encoding/compression and network transmission, as well as client logic for control commands, testing, and media handling. He optimized algorithms to meet real-time requirements on limited hardware (profiling, memory footprint, threading), built test suites for both offline and integration tests in field-like scenarios.
     `,
-    roles: ['Research Engineer', 'Solution Architect', 'Full Stack Developer'],
+    roles: ['Research Intern', 'Solution Architect', 'Full Stack Developer'],
     keywords: ['Python', 'C++', 'Computer Vision', 'OpenCV', 'Machine Learning', 'Edge Computing', 'LTE', 'Space Robotics', 'Swarm Intelligence'],
     image: '/images/space.jpg',
     featured: true,
@@ -355,7 +355,7 @@ Unity 2019 · C# · Unity NetworkTransport · MongoDB Atlas · BinaryFormatter �
   },
   {
     slug: 'scooteroni',
-    title: 'Scooteroni — 3D Multiplayer Racing Game',
+    title: 'Racing Car Game — 3D Multiplayer Racing Game',
     client: 'Personal Project',
     period: 'Mar 2020 – Apr 2020',
     startYear: 2020,
@@ -467,7 +467,7 @@ During a semester exchange at Technische Universiteit Eindhoven (TU/e) — one o
 
 This international experience not only broadened Robin's technical foundations but also developed cross-cultural collaboration skills and exposed him to cutting-edge European research in AI and engineering.
     `,
-    roles: ['Exchange Student'],
+    roles: ['Student'],
     keywords: ['Machine Learning', 'Business Intelligence', 'Process Mining', 'Signal Processing', 'Image Processing', 'App Development'],
     image: '/images/university.jpg',
   },
@@ -502,7 +502,7 @@ Mälardalen University's Civil Engineering programme in Robotics is one of Swede
 
 This degree gave Robin the rare ability to think from transistor to cloud — understanding hardware constraints while designing scalable software architectures.
     `,
-    roles: ['Engineering Student', 'Graduate Researcher', 'Thesis Author'],
+    roles: ['Student', 'Graduate Researcher', 'Thesis Author'],
     keywords: ['Robotics', 'Computer Vision', 'Signal Processing', 'Algorithm Design', 'Software Architecture', 'Embedded Systems', 'PCB Design', 'MATLAB', 'C++'],
     image: '/images/robotics-academic.jpg',
   },
