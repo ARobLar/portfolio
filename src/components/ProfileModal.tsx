@@ -337,15 +337,14 @@ function GitHubProfile({ url }: { url: string }) {
           <h2 style={{ fontSize:14, fontWeight:600, color:'#e6edf3', marginBottom:10 }}>Pinned</h2>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:16 }}>
             {[
-              { name:'portfolio', desc:'Personal portfolio — Next.js, Tailwind, Cloudflare Pages', lang:'TypeScript', color:'#3178c6' },
-              { name:'job-hunter', desc:'AI-powered job search tool using Claude + Swedish job API', lang:'TypeScript', color:'#3178c6' },
-              { name:'industry40-cloud', desc:'ABB Industry 4.0 cloud architecture PoC', lang:'C#', color:'#178600' },
-              { name:'rehabilitation-platform', desc:'Real-time 3D rehab platform with wearable sensors', lang:'C#', color:'#178600' },
+              { name:'portfolio',  desc:'Personal portfolio site',                      lang:'TypeScript', color:'#3178c6', href:'https://github.com/ARobLar/portfolio'  },
+              { name:'Play-N-Fun', desc:'All projects made for fun to play around with', lang:'C#',         color:'#178600', href:'https://github.com/ARobLar/Play-N-Fun' },
+              { name:'devagent',   desc:'',                                              lang:'JavaScript', color:'#f1e05a', href:'https://github.com/ARobLar/devagent'   },
             ].map(repo => (
               <div key={repo.name} style={{ background:'#161b22', border:'1px solid #30363d', borderRadius:6, padding:12 }}>
-                <a href={url} target="_blank" rel="noopener noreferrer" style={{ fontSize:13, fontWeight:600, color:'#58a6ff', textDecoration:'none' }}>ARobLar/{repo.name}</a>
-                <p style={{ fontSize:12, color:'#8b949e', margin:'6px 0 8px', lineHeight:1.4 }}>{repo.desc}</p>
-                <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#8b949e' }}>
+                <a href={repo.href} target="_blank" rel="noopener noreferrer" style={{ fontSize:13, fontWeight:600, color:'#58a6ff', textDecoration:'none' }}>ARobLar/{repo.name}</a>
+                {repo.desc && <p style={{ fontSize:12, color:'#8b949e', margin:'6px 0 8px', lineHeight:1.4 }}>{repo.desc}</p>}
+                <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#8b949e', marginTop:8 }}>
                   <span style={{ width:10, height:10, borderRadius:'50%', background:repo.color, display:'inline-block' }} />
                   {repo.lang}
                 </div>
