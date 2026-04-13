@@ -316,7 +316,7 @@ The client needed autonomous, energy-efficient algorithms that can execute local
     fullDescription: `
 Built as a surprise birthday gift during the COVID-19 lockdown — a fully networked 3D multiplayer game created from scratch in Unity over a few weeks. The goal was to produce something personal, playable together over the internet, and full of small surprises to celebrate the occasion.
 
-**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun/tree/Development/HappyBirthday)
+**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun)
 
 **Multiplayer Architecture**
 
@@ -367,7 +367,7 @@ Unity 2019 · C# · Unity NetworkTransport · MongoDB Atlas · BinaryFormatter �
     fullDescription: `
 A self-contained 3D racing game built for fun in Unity during the COVID-19 lockdown. Everything from the track geometry to the camera behaviour was built from scratch, with Photon PUN providing the online multiplayer layer.
 
-**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun/tree/Development/CarGame)
+**Repository:** [ARobLar/Play-N-Fun on GitHub](https://github.com/ARobLar/Play-N-Fun)
 
 **The Track**
 

@@ -195,9 +195,6 @@ function LinkedInProfile({ url }: { url: string }) {
               <p style={{ margin:'0 0 6px', fontSize:13, color:'rgba(0,0,0,.6)' }}>
                 Stockholm, Stockholm County, Sweden
               </p>
-              <p style={{ margin:'0 0 12px', fontSize:13, color: LI_BLUE, fontWeight:500, cursor:'default' }}>
-                500+ connections
-              </p>
               {/* CTA buttons */}
               <div style={{ display:'flex', gap:8, marginBottom:16, flexWrap:'wrap' }}>
                 <a href={url} target="_blank" rel="noopener noreferrer"
@@ -321,10 +318,6 @@ function GitHubProfile({ url }: { url: string }) {
             <span>📍 Stockholm, Sweden</span>
             <span>🏢 Sopra Steria</span>
             <a href={url} target="_blank" rel="noopener noreferrer" style={{ color:'#58a6ff', textDecoration:'none' }}>🔗 linkedin.com/in/robin-larsson...</a>
-          </div>
-          <div style={{ marginTop:16, fontSize:13, color:'#e6edf3' }}>
-            <span style={{ color:'#e6edf3', fontWeight:600 }}>47</span><span style={{ color:'#8b949e' }}> followers · </span>
-            <span style={{ color:'#e6edf3', fontWeight:600 }}>62</span><span style={{ color:'#8b949e' }}> following</span>
           </div>
         </div>
         {/* Right col */}
