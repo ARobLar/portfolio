@@ -60,16 +60,46 @@ interface LanedProject {
 }
 
 function assignLanes(items: LanedProject[]): LanedProject[] {
-  // Greedy top-fill: sort by start date, place each item in the lowest
-  // available lane. This maximises row usage and makes overlaps obvious.
-  const sorted = [...items].sort((a, b) => a.startDec - b.startDec)
-  const laneEnds: number[] = []
-  return sorted.map((item) => {
-    const lane = laneEnds.findIndex((end) => end <= item.startDec + 0.1)
-    const assigned = lane === -1 ? laneEnds.length : lane
-    laneEnds[assigned] = item.endDec
-    return { ...item, lane: assigned }
+  // Company-banded greedy fill:
+  //   1. Group items by employer company so same-colour bars stay together.
+  //   2. Within each company, pack items greedily into the fewest rows.
+  //   3. Stack company bands top-to-bottom ordered by earliest start date.
+  // Tolerance of 0.1 yr (~5 weeks) treats near-sequential items as non-overlapping.
+  const TOL = 0.1
+
+  const byCompany = new Map<string, LanedProject[]>()
+  for (const item of items) {
+    const co = getCompany(item.project)
+    if (!byCompany.has(co)) byCompany.set(co, [])
+    byCompany.get(co)!.push(item)
+  }
+
+  const companyOrder = [...byCompany.keys()].sort((a, b) => {
+    const minA = Math.min(...byCompany.get(a)!.map((i) => i.startDec))
+    const minB = Math.min(...byCompany.get(b)!.map((i) => i.startDec))
+    return minA - minB
   })
+
+  const result: LanedProject[] = []
+  let baseLane = 0
+
+  for (const co of companyOrder) {
+    const coItems = [...byCompany.get(co)!].sort((a, b) => a.startDec - b.startDec)
+    const laneEnds: number[] = []
+    let maxIntra = 0
+
+    for (const item of coItems) {
+      const lane = laneEnds.findIndex((end) => end <= item.startDec + TOL)
+      const assigned = lane === -1 ? laneEnds.length : lane
+      laneEnds[assigned] = item.endDec
+      maxIntra = Math.max(maxIntra, assigned)
+      result.push({ ...item, lane: baseLane + assigned })
+    }
+
+    baseLane += maxIntra + 1
+  }
+
+  return result
 }
 
 // Layout
